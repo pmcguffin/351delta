@@ -1,0 +1,153 @@
+CREATE TABLE Alumni_Account (
+    Alumni_Email VARCHAR(255) PRIMARY KEY,
+    Name VARCHAR(255),
+    Phone_Number VARCHAR(20),
+    Major VARCHAR(255),
+    Graduation_Year INT
+);
+
+CREATE TABLE Professors_Account (
+    Professor_Email VARCHAR(255) PRIMARY KEY,
+    Name VARCHAR(255),
+    Phone_Number VARCHAR(20)
+);
+
+CREATE TABLE Student_Account (
+    Student_Email VARCHAR(255) PRIMARY KEY,
+    Name VARCHAR(255),
+    Phone_Number VARCHAR(20),
+    Minor VARCHAR(255),
+    Major VARCHAR(255),
+    Graduation_Year INT
+);
+
+CREATE TABLE Employers_Account (
+    Employer_Email VARCHAR(255) PRIMARY KEY,
+    Name VARCHAR(255),
+    Phone_Number VARCHAR(20),
+    Company_Name VARCHAR(255)
+);
+
+CREATE TABLE Admin_Account (
+    Admin_Email VARCHAR(255) PRIMARY KEY,
+    Name VARCHAR(255),
+    Phone_Number VARCHAR(20)
+);
+
+CREATE TABLE Jobs (
+    Job_ID INT PRIMARY KEY,
+    Job_Description TEXT,
+    Company_Name VARCHAR(255),
+    Major VARCHAR(255),
+    Alumni_Email VARCHAR(255) NULL, -- Optional relationship
+    FOREIGN KEY (Alumni_Email) REFERENCES Alumni_Account(Alumni_Email)
+);
+
+CREATE TABLE Applications (
+    Application_ID INT PRIMARY KEY,
+    Student_Email VARCHAR(255) NOT NULL,
+    Job_ID INT NOT NULL,
+    FOREIGN KEY (Student_Email) REFERENCES Student_Account(Student_Email),
+    FOREIGN KEY (Job_ID) REFERENCES Jobs(Job_ID)
+);
+
+CREATE TABLE Exit_Survey (
+    Application_ID INT PRIMARY KEY,
+    Student_Email VARCHAR(255) NOT NULL,
+    Job_ID INT NOT NULL,
+    FOREIGN KEY (Application_ID) REFERENCES Applications(Application_ID),
+    FOREIGN KEY (Student_Email) REFERENCES Student_Account(Student_Email),
+    FOREIGN KEY (Job_ID) REFERENCES Jobs(Job_ID)
+);
+
+CREATE TABLE Chat (
+    Chat_ID INT PRIMARY KEY,
+    Chatter VARCHAR(255) NOT NULL,
+    Alumni_Email VARCHAR(255) NULL,  -- Optional relationship
+    Professor_Email VARCHAR(255) NULL, -- Optional relationship
+    Employer_Email VARCHAR(255) NULL, -- Optional relationship
+    Student_Email VARCHAR(255) NULL, -- Optional relationship
+    FOREIGN KEY (Alumni_Email) REFERENCES Alumni_Account(Alumni_Email),
+    FOREIGN KEY (Professor_Email) REFERENCES Professors_Account(Professor_Email),
+    FOREIGN KEY (Employer_Email) REFERENCES Employers_Account(Employer_Email),
+    FOREIGN KEY (Student_Email) REFERENCES Student_Account(Student_Email)
+);
+
+CREATE TABLE Chat_Information (
+    Chat_ID INT PRIMARY KEY,
+    Chat_Time TIMESTAMP,
+    Chat_Data TEXT,
+    Message_Contents TEXT,
+    FOREIGN KEY (Chat_ID) REFERENCES Chat(Chat_ID)
+);
+
+
+
+-- INSERT COMMANDS FOR MOCK DATA
+
+-- Insert Alumni Accounts
+INSERT INTO Alumni_Account (Alumni_Email, Name, Phone_Number, Major, Graduation_Year)
+VALUES
+('jdoe@email.com', 'John Doe', '123-456-7890', 'Computer Science', 2015),
+('asmith@email.com', 'Alice Smith', '987-654-3210', 'Mechanical Engineering', 2018),
+('bwilliams@email.com', 'Bob Williams', '555-123-4567', 'Electrical Engineering', 2017);
+
+-- Insert Professors Accounts
+INSERT INTO Professors_Account (Professor_Email, Name, Phone_Number)
+VALUES
+('profjones@univ.edu', 'Dr. Jones', '555-987-6543'),
+('profbrown@univ.edu', 'Dr. Brown', '555-321-6789');
+
+-- Insert Student Accounts
+INSERT INTO Student_Account (Student_Email, Name, Phone_Number, Minor, Major, Graduation_Year)
+VALUES
+('sarah.t@email.com', 'Sarah Thompson', '111-222-3333', 'Mathematics', 'Computer Science', 2024),
+('mike.r@email.com', 'Mike Roberts', '444-555-6666', 'Physics', 'Mechanical Engineering', 2025),
+('emily.k@email.com', 'Emily Knight', '777-888-9999', 'Business', 'Electrical Engineering', 2023);
+
+-- Insert Employers Accounts
+INSERT INTO Employers_Account (Employer_Email, Name, Phone_Number, Company_Name)
+VALUES
+('techcorp@email.com', 'Tech Corp', '888-111-2222', 'Tech Corp'),
+('engworks@email.com', 'Engineering Works', '999-333-4444', 'Engineering Works');
+
+-- Insert Admin Accounts
+INSERT INTO Admin_Account (Admin_Email, Name, Phone_Number)
+VALUES
+('admin1@univ.edu', 'Admin One', '666-777-8888'),
+('admin2@univ.edu', 'Admin Two', '111-444-5555');
+
+-- Insert Jobs
+INSERT INTO Jobs (Job_ID, Job_Description, Company_Name, Major, Alumni_Email)
+VALUES
+(1, 'Software Engineer Internship', 'Tech Corp', 'Computer Science', 'jdoe@email.com'),
+(2, 'Mechanical Engineer Co-op', 'Engineering Works', 'Mechanical Engineering', 'asmith@email.com'),
+(3, 'Electrical Engineer Intern', 'Tech Corp', 'Electrical Engineering', NULL);
+
+-- Insert Applications
+INSERT INTO Applications (Application_ID, Student_Email, Job_ID)
+VALUES
+(101, 'sarah.t@email.com', 1),
+(102, 'mike.r@email.com', 2),
+(103, 'emily.k@email.com', 3);
+
+-- Insert Exit Surveys
+INSERT INTO Exit_Survey (Application_ID, Student_Email, Job_ID)
+VALUES
+(101, 'sarah.t@email.com', 1),
+(102, 'mike.r@email.com', 2);
+
+-- Insert Chat Conversations
+INSERT INTO Chat (Chat_ID, Chatter, Alumni_Email, Professor_Email, Employer_Email, Student_Email)
+VALUES
+(1, 'jdoe@email.com', 'jdoe@email.com', NULL, NULL, 'sarah.t@email.com'),
+(2, 'mike.r@email.com', NULL, 'profjones@univ.edu', NULL, 'mike.r@email.com'),
+(3, 'emily.k@email.com', NULL, NULL, 'techcorp@email.com', 'emily.k@email.com');
+
+-- Insert Chat Information
+INSERT INTO Chat_Information (Chat_ID, Chat_Time, Chat_Data, Message_Contents)
+VALUES
+(1, '2024-02-05 10:30:00', 'Chat about job application', 'Hello, I’m interested in this position.'),
+(2, '2024-02-05 11:00:00', 'Discussion on career guidance', 'What skills should I focus on?'),
+(3, '2024-02-05 12:15:00', 'Interview discussion', 'Let’s schedule an interview for next week.');
+
