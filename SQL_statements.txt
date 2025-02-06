@@ -151,3 +151,12 @@ VALUES
 (2, '2024-02-05 11:00:00', 'Discussion on career guidance', 'What skills should I focus on?'),
 (3, '2024-02-05 12:15:00', 'Interview discussion', 'Let’s schedule an interview for next week.');
 
+
+-- Adding password attributes to the user accounts
+ALTER TABLE Alumni_Account ADD COLUMN Password_Hash VARCHAR(255);
+ALTER TABLE Professors_Account ADD COLUMN Password_Hash VARCHAR(255);
+ALTER TABLE Student_Account ADD COLUMN Password_Hash VARCHAR(255);
+ALTER TABLE Employers_Account ADD COLUMN Password_Hash VARCHAR(255);
+ALTER TABLE Admin_Account ADD COLUMN Password_Hash VARCHAR(255);
+
+
