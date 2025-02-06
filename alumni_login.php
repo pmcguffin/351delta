@@ -19,11 +19,13 @@ if(isset($_POST['submit'])) {
 	  die("Connection failed: " . $conn->connect_error) . "</br>";
 	}
 	
-	$sql = "SELECT * FROM alumni_account WHERE Alumni_Email = " . $_POST['uname'] . "AND " . "";
+	$sql = "SELECT * FROM alumni_account WHERE Alumni_Email = " . $_POST['uname'] . " AND " . "Password_Hash = " . $_POST['pword'];
 	$result = $conn->query($sql);
 	
 	if ($result->num_rows > 0) {
-		echo "Login Successful!";
+		session_start();
+		$row = $result->fetch_assoc();
+		$_SESSION['Alumni_Email'] = $row['Alumni_Email'];
 	} else {
 		echo "Login failed. Please try again.";
 	}
