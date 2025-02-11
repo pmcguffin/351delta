@@ -1,5 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Login</title>
+</head>
+<body>
+    <form action="student_login.php" method="post">
+        Username: <input type="text" name="uname" required>
+        <br> Password: <input type="password" name="pword" required>
+        <p><input type="submit" name="submit" value="Login"></p>
+    </form>
+</body>
+</html>
+
 <?php
-session_start(); // Ensure session starts at the top
+session_start(); 
 
 if (isset($_POST['submit'])) {
     $servername = "localhost";
@@ -15,7 +29,6 @@ if (isset($_POST['submit'])) {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Get user input and sanitize
     $uname = trim($_POST['uname']);
     $pword = trim($_POST['pword']);
 
@@ -33,9 +46,9 @@ if (isset($_POST['submit'])) {
 
         // Verify the password using password_verify()
         if (password_verify($pword, $stored_hash)) {
-            $_SESSION['Student_Email'] = $row['Student_Email']; // Store session
-            header("Location: main.php"); // Redirect on success
-            exit(); // Stop script execution after redirect
+            $_SESSION['Student_Email'] = $row['Student_Email'];
+            header("Location: main.php");
+            exit();
         } else {
             echo "Incorrect username or password.";
         }
@@ -43,22 +56,9 @@ if (isset($_POST['submit'])) {
         echo "Incorrect username or password.";
     }
 
-    // Close resources
     $stmt->close();
     $conn->close();
 }
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Student Login</title>
-</head>
-<body>
-    <form action="student_login.php" method="post">
-        Username: <input type="text" name="uname" required>
-        <br> Password: <input type="password" name="pword" required>
-        <p><input type="submit" name="submit" value="Login"></p>
-    </form>
-</body>
-</html>
+
