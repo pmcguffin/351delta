@@ -30,6 +30,8 @@ if(isset($_POST['submit'])){
 		session_start();
 		$row = $result->fetch_assoc();
 		$_SESSION['Admin_Email'] = $row['Admin_Email'];
+		// main.php is a placeholder for the main paige and doesn't exist
+		header("Location: main.php");
 	} else {
 		echo "Login failed. Please try again.";
 	}
