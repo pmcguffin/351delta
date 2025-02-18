@@ -20,6 +20,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $phone = trim($_POST["phone"]);
     $password = trim($_POST["password"]);
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+	
+	if (($userType === "Student" || $userType === "Professor") && !str_ends_with($email, "@cnu.edu")) {
+        echo "Error: Students and Professors must use a CNU email (@cnu.edu).";
+        exit();
+    }
+
 
 	$tables = [
 		"Alumni_Account" => "Alumni_Email",
@@ -110,7 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <h2>Register</h2>
     <form method="post" action="registration.php">
-        <label>Email: <input type="email" name="email" required placeholder="example@cnu.edu"></label><br>
+        <label>Email: <input type="email" name="email" required placeholder="example@gmail.com"></label><br>
         <label>Name: <input type="text" name="name" required placeholder="John Doe"></label><br>
         <label>Phone Number: <input type="text" name="phone" required placeholder="123-456-7890"></label><br>
         <label>Password: <input type="password" name="password" required placeholder="*********"></label><br>
