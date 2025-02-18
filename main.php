@@ -8,33 +8,26 @@ if (!isset($_SESSION['Admin_Email']) &&
     !isset($_SESSION['Student_Email']) && 
     !isset($_SESSION['Alumni_Email'])) {
     
-    header("Location: main.php"); // Redirect to login page if not authenticated
+    header("Location: login.php"); // Redirect to login page if not authenticated
     exit();
 }
+
+// Redirect to the specific dashboard based on the session variable
+if (isset($_SESSION['Admin_Email'])) {
+    header("Location: admin_dashboard.php");
+    exit();
+} elseif (isset($_SESSION['Alumni_Email'])) {
+    header("Location: alumni_dashboard.php");
+    exit();
+} elseif (isset($_SESSION['Employer_Email'])) {
+    header("Location: employer_dashboard.php");
+    exit();
+} elseif (isset($_SESSION['Professor_Email'])) {
+    header("Location: professor_dashboard.php");
+    exit();
+} elseif (isset($_SESSION['Student_Email'])) {
+    header("Location: student_dashboard.php");
+    exit();
+}
+
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-</head>
-<body>
-    <h2>Welcome!</h2>
-
-    <p>You are logged in as: 
-        <strong>
-            <?php 
-                if (isset($_SESSION['Admin_Email'])) echo $_SESSION['Admin_Email'];
-                elseif (isset($_SESSION['Employer_Email'])) echo $_SESSION['Employer_Email'];
-                elseif (isset($_SESSION['Professor_Email'])) echo $_SESSION['Professor_Email'];
-                elseif (isset($_SESSION['Student_Email'])) echo $_SESSION['Student_Email'];
-                elseif (isset($_SESSION['Alumni_Email'])) echo $_SESSION['Alumni_Email'];
-            ?>
-        </strong>
-    </p>
-
-    <a href="logout.php">Logout</a> <!-- Logout option -->
-</body>
-</html>
