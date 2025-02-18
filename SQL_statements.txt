@@ -180,4 +180,13 @@ UPDATE student_account
 SET Password_Hash = 'test' 
 WHERE Student_Email = 'emily.k@email.com';
 
+CREATE TABLE Pending_Accounts (
+    Email VARCHAR(255) PRIMARY KEY,
+    Name VARCHAR(255),
+    Phone_Number VARCHAR(20),
+    Major VARCHAR(255),
+    Company_Name VARCHAR(255),
+    Graduation_Year INT,
+    Approval_Status INT
+);
 
