@@ -66,9 +66,14 @@ $result = $conn->query($sql);
                     <td>{$row['Graduation_Year']}</td>
                     <td>{$row['User_Type']}</td>
 					<td>
-                        <button class='approve' onclick='handleAction({$row['Email']}, \"approve\")'>Approve</button>
-                        <button class='deny' onclick='handleAction({$row['Email']}, \"deny\")'>Deny</button>
-                    </td>
+						<form method='POST' action='process_action.php'>
+						<input type='hidden' name='email' value='" . htmlspecialchars($row['Email'], ENT_QUOTES, 'UTF-8') . "'>
+						<button type='submit' name='action' value='approve' class='approve'>Approve</button>
+						<button type='submit' name='action' value='deny' class='deny'>Deny</button>
+					</form>
+					</td>
+
+
 
                   </tr>";
         }
@@ -79,13 +84,6 @@ $result = $conn->query($sql);
 
 </table>
 
-<script>
-// function handleAction(userEmail, action) {
-//    if (confirm(`Are you sure you want to ${action} user ID ${userEmail}?`)) {
-//        window.location.href = `process_action.php?id=${useEmail}&action=${action}`;
-//    }
-//}
-</script>
 
 </body>
 </html>

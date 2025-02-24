@@ -187,6 +187,7 @@ CREATE TABLE Pending_Accounts (
     Major VARCHAR(255),
     Company_Name VARCHAR(255),
     Graduation_Year INT,
-    User_Type INT
+    User_Type INT,
+    Password_Hash VARCHAR(255)
 );
 
