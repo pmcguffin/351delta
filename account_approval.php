@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && isset($_P
     } elseif ($action == 'deny') {
         // Remove user from pending accounts
         if ($conn->query("DELETE FROM Pending_Accounts WHERE Email = '$email'") === TRUE) {
-            echo "<script>alert('User denied successfully!'); window.location.reload();</script>";
+            echo "<script>alert('User denied successfully!'); window.location.href = window.location.pathname;</script>";
         } else {
             echo "<script>alert('Error denying user: " . $conn->error . "');</script>";
         }
