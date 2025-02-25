@@ -160,7 +160,7 @@
                 $row = $result->fetch_assoc();
                 $stored_hash = $row['Password_Hash'];
 
-                if ($pword === $stored_hash) {  // Change to password_verify($pword, $stored_hash) if using hashed passwords
+                if (password_verify($pword, $stored_hash)) {  // Change to password_verify($pword, $stored_hash) if using hashed passwords
                     session_unset();  // Clear all existing session variables to avoid conflicts
                     $_SESSION[$email_column] = $row[$email_column];  // Set the correct session variable for the user type
                     header("Location: main.php");
