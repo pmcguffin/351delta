@@ -77,10 +77,29 @@
             bottom: 0;
         }
 
-        .error {
-            color: red;
-            font-size: 16px;
-        }
+		.error-container {
+			display: flex;
+			justify-content: center;  /* Centers horizontally */
+			align-items: center;  /* Aligns towards the top */
+			height: 20vh;  /* Reduces whitespace */
+			flex-direction: column;
+			margin-top: 20px; /* Adds a small gap from the top */
+		}
+
+		.error-message {
+			background-color: #ffcccc;
+			color: #d8000c;
+			text-align: center;
+			padding: 12px;
+			font-size: 16px;
+			font-weight: bold;
+			border: 1px solid #d8000c;
+			border-radius: 5px;
+			width: 50%;
+			max-width: 500px;
+		}
+
+
     </style>
 </head>
 <body>
@@ -89,98 +108,135 @@
         <h2>Login to Your Account</h2>
     </header>
 
+<!-- Display Error Messages Here -->
+<<?php
+if (isset($_GET['error'])) {
+    echo "<div class='error-container'>";
+    echo "<div class='error-message'>";
+    switch ($_GET['error']) {
+        case 'not_verified':
+            echo "❌ Your account has not been verified by an admin yet.";
+            break;
+        case 'incorrect_password':
+            echo "❌ Incorrect password. Try again.";
+            break;
+        case 'user_not_found':
+            echo "❌ No account found with that email.";
+            break;
+        case 'invalid_classification':
+            echo "❌ Invalid classification selected.";
+            break;
+    }
+    echo "</div>";
+    echo "</div>";
+}
+?>
+
+
     <div class="container">
-        <form action="" method="post">
-            <p class="radio-label">Choose your classification:</p>
-            <input type="radio" id="Admin" name="classification" value="Admin" required>
-            <label for="Admin">Admin</label><br>
-            <input type="radio" id="Alumni" name="classification" value="Alumni">
-            <label for="Alumni">Alumni</label><br>
-            <input type="radio" id="Employer" name="classification" value="Employer">
-            <label for="Employer">Employer</label><br>
-            <input type="radio" id="Professor" name="classification" value="Professor">
-            <label for="Professor">Professor</label><br>
-            <input type="radio" id="Student" name="classification" value="Student">
-            <label for="Student">Student</label><br><br>
+       <form action="" method="post">
+    <p class="radio-label">Choose your classification:</p>
+    <input type="radio" id="Admin" name="classification" value="Admin" required>
+    <label for="Admin">Admin</label><br>
+    <input type="radio" id="Alumni" name="classification" value="Alumni">
+    <label for="Alumni">Alumni</label><br>
+    <input type="radio" id="Employer" name="classification" value="Employer">
+    <label for="Employer">Employer</label><br>
+    <input type="radio" id="Professor" name="classification" value="Professor">
+    <label for="Professor">Professor</label><br>
+    <input type="radio" id="Student" name="classification" value="Student">
+    <label for="Student">Student</label><br><br>
 
-            <label for="username">Username:</label>
-            <input name="uname" id="username" type="text" required><br>
+    <label for="username">Email:</label>
+    <input name="uname" id="username" type="text" required><br>
 
-            <label for="password">Password:</label>
-            <input name="pword" id="password" type="password" required><br>
+    <label for="password">Password:</label>
+    <input name="pword" id="password" type="password" required><br>
 
-            <button type="submit" name="submit">Submit</button>
-        </form>
+    <button type="submit" name="submit">Submit</button>
+</form>
 
-        <?php
-        session_start();
-        include('Connection.php');
 
-        if (isset($_POST['submit'])) {
-            $uname = trim($_POST['uname']);
-            $pword = trim($_POST['pword']);
-            $classification = $_POST['classification'];
 
-            $table = "";
-            $email_column = "";
 
-            switch ($classification) {
-                case "Admin":
-                    $table = "admin_account";
-                    $email_column = "Admin_Email";
-                    break;
-                case "Alumni":
-                    $table = "alumni_account";
-                    $email_column = "Alumni_Email";
-                    break;
-                case "Employer":
-                    $table = "employers_account";
-                    $email_column = "Employer_Email";
-                    break;
-                case "Professor":
-                    $table = "professors_account";
-                    $email_column = "Professor_Email";
-                    break;
-                case "Student":
-                    $table = "student_account";
-                    $email_column = "Student_Email";
-                    break;
-                default:
-                    echo "<p class='error'>❌ Invalid classification.</p>";
-                    exit();
-            }
+    <?php
+ob_start();  // Prevents unexpected output
+session_start();
+session_regenerate_id(true);
+include('Connection.php');
 
-            $sql = "SELECT $email_column, Password_Hash FROM $table WHERE $email_column = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("s", $uname);
-            $stmt->execute();
-            $result = $stmt->get_result();
+if (isset($_POST['submit'])) {
+    if (!$conn) {
+        die("<p class='error'>❌ Database connection failed.</p>");
+    }
 
-            if ($result->num_rows > 0) {
-                $row = $result->fetch_assoc();
-                $stored_hash = $row['Password_Hash'];
+    // Sanitize input
+    $uname = htmlspecialchars(trim($_POST['uname']));
+    $pword = trim($_POST['pword']);
+    $classification = $_POST['classification'] ?? '';
 
-                if (password_verify($pword, $stored_hash)) {  // Change to password_verify($pword, $stored_hash) if using hashed passwords
-                    session_unset();  // Clear all existing session variables to avoid conflicts
-                    $_SESSION[$email_column] = $row[$email_column];  // Set the correct session variable for the user type
-                    header("Location: main.php");
-                    exit();
-                } else {
-                    echo "<p class='error'>❌ Login failed. Incorrect password.</p>";
-                }
-            } else {
-                echo "<p class='error'>❌ Login failed. User not found.</p>";
-            }
+    // Define user types
+    $tables = [
+        "Admin" => ["admin_account", "Admin_Email"],
+        "Alumni" => ["alumni_account", "Alumni_Email"],
+        "Employer" => ["employers_account", "Employer_Email"],
+        "Professor" => ["professors_account", "Professor_Email"],
+        "Student" => ["student_account", "Student_Email"],
+    ];
 
-            $stmt->close();
-            $conn->close();
-        }
-        ?>
-    </div>
+    if (!isset($tables[$classification])) {
+        header("Location: login.php?error=invalid_classification");
+        exit();
+    }
 
-    <footer>
-        <p>&copy; 2025 User Login</p>
-    </footer>
+    list($table, $email_column) = $tables[$classification];
 
+// Modify SQL to check the "verified" status for Alumni and Employers
+$verified_check = ($classification === "Alumni" || $classification === "Employer") ? ", verified" : "";
+
+$sql = "SELECT $email_column, Password_Hash $verified_check FROM $table WHERE $email_column = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $uname);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $stored_hash = $row['Password_Hash'];
+
+    // Check verification status for Alumni and Employers
+    if (($classification === "Alumni" || $classification === "Employer") && isset($row['verified']) && $row['verified'] == 0) {
+        header("Location: all_user_login.php?error=not_verified");
+        exit();
+    }
+
+    // Check password
+    if (password_verify($pword, $stored_hash)) {
+        session_unset();
+        $_SESSION[$email_column] = $row[$email_column];
+        header("Location: main.php");
+        exit();
+    } else {
+        header("Location: all_user_login.php?error=incorrect_password");
+        exit();
+    }
+} else {
+    header("Location: all_user_login.php?error=user_not_found");
+    exit();
+}
+
+$stmt->close();
+$conn->close();
+
+}
+ob_end_flush();
+?>
+
+<p style="margin-top: 15px; font-size: 14px; color: #041E42;">
+				Don't have an account? 
+				<a href="registration.php" style="color: #0077C8; text-decoration: none; font-weight: bold;">
+				Register
+				</a>
+			</p>
 </body>
 </html>
