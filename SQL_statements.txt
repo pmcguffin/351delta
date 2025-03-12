@@ -191,3 +191,5 @@ CREATE TABLE Pending_Accounts (
     Password_Hash VARCHAR(255)
 );
 
+ALTER TABLE Alumni_Account ADD verified BOOLEAN DEFAULT 0;
+ALTER TABLE Employers_Account ADD verified BOOLEAN DEFAULT 0;
