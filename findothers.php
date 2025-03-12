@@ -1,4 +1,13 @@
-<html>
+
+<h1>Find Others!</h1>
+<p>Search based on Major, Graduation Year, Company name, or Name:</p>  
+
+<form class="example" action="findothers.php" method="post">
+  <input type="text" placeholder="Major, Graduation Year, Name" name="search">
+  <button type="submit"><i class="fa fa-search"></i></button>
+</form>
+
+<br>
 <body>
 
 <head>
@@ -108,17 +117,6 @@
 
 </head>
 
-
-<h1>Find Others!</h1>
-<p>Search based on Major, Graduation Year, Company name, or Name:</p>  
-
-<form class="example" action="findothers.php" method="post">
-  <input type="text" placeholder="Major, Graduation Year, Name" name="search">
-  <button type="submit"><i class="fa fa-search"></i></button>
-</form>
-
-<br>
-
 <?php
 if (isset($_POST['search'])) {
     // Database connection details
@@ -129,15 +127,14 @@ if (isset($_POST['search'])) {
 
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
-    // Check connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Sanitize user input
+
     $search = $conn->real_escape_string($_POST['search']); 
 
-    // SQL query with UNION
+   
     $sql = "
         SELECT 'Admin' AS user_type, Name, NULL AS Major, NULL AS Graduation_Year, NULL AS Company_Name 
         FROM Admin_Account 
@@ -173,10 +170,8 @@ if (isset($_POST['search'])) {
         OR Graduation_Year LIKE '%$search%'
     ";
 
-    // Execute query
     $result = $conn->query($sql);
 
-    // Check if results are found
     if ($result->num_rows > 0) {
         echo "<h2>Search Results:</h2>";
         echo "<table border='1'>
@@ -186,6 +181,7 @@ if (isset($_POST['search'])) {
                     <th>Major</th>
                     <th>Graduation Year</th>
                     <th>Company Name</th>
+                    <th>Action</th>
                 </tr>";
 
         while ($row = $result->fetch_assoc()) {
@@ -195,6 +191,16 @@ if (isset($_POST['search'])) {
                     <td>" . ($row["Major"] ? $row["Major"] : 'N/A') . "</td>
                     <td>" . ($row["Graduation_Year"] ? $row["Graduation_Year"] : 'N/A') . "</td>
                     <td>" . ($row["Company_Name"] ? $row["Company_Name"] : 'N/A') . "</td>
+                    <td>
+                        <form action='save_contact.php' method='post'>
+                            <input type='hidden' name='user_type' value='" . $row["user_type"] . "'>
+                            <input type='hidden' name='name' value='" . $row["Name"] . "'>
+                            <input type='hidden' name='major' value='" . ($row["Major"] ? $row["Major"] : '') . "'>
+                            <input type='hidden' name='grad_year' value='" . ($row["Graduation_Year"] ? $row["Graduation_Year"] : '') . "'>
+                            <input type='hidden' name='company' value='" . ($row["Company_Name"] ? $row["Company_Name"] : '') . "'>
+                            <button type='submit'>Add</button>
+                        </form>
+                    </td>
                   </tr>";
         }
         echo "</table>";
@@ -202,10 +208,11 @@ if (isset($_POST['search'])) {
         echo "No results found.";
     }
 
-    // Close the connection
     $conn->close();
 }
 ?>
+	
+ 
+      
 
-</body>
-</html>
+        
