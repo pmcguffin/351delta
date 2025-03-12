@@ -193,3 +193,11 @@ CREATE TABLE Pending_Accounts (
 
 ALTER TABLE Alumni_Account ADD verified BOOLEAN DEFAULT 0;
 ALTER TABLE Employers_Account ADD verified BOOLEAN DEFAULT 0;
+
+CREATE TABLE saved_contacts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_type VARCHAR(50),
+    name VARCHAR(255),
+    major VARCHAR(255) NULL,
+    graduation_year VARCHAR(50) NULL,
+    company_name VARCHAR(255) NULL);
