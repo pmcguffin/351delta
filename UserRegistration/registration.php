@@ -292,7 +292,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="submit" value="Register">
 			<p style="margin-top: 15px; font-size: 14px; color: #041E42;">
 				Already have an account? 
-				<a href="all_user_login.php" style="color: #0077C8; text-decoration: none; font-weight: bold;">
+				<a href="login.php" style="color: #0077C8; text-decoration: none; font-weight: bold;">
 				Log in
 				</a>
 			</p>
