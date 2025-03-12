@@ -1,5 +1,5 @@
 <html><body>
-<form action="alumni_login.php" method="post">
+<form action="351deltatest.php" method="post">
 Username: <input type="text" name="uname">
 <br> Password: <input type="text" name="pword"> <p>
 <input type="submit" name="submit">
@@ -19,15 +19,13 @@ if(isset($_POST['submit'])) {
 	  die("Connection failed: " . $conn->connect_error) . "</br>";
 	}
 	
-	$sql = "SELECT * FROM alumni_account WHERE Alumni_Email = '" . $_POST['uname'] . "' AND  Password_Hash = '" . $_POST['pword']."'";
+	$sql = "SELECT * FROM Professor_email WHERE Professor_Email = " . $_POST['uname'] . " AND " . "Password_Hash = " . $_POST['pword'];
 	$result = $conn->query($sql);
 	
 	if ($result->num_rows > 0) {
 		session_start();
 		$row = $result->fetch_assoc();
-		$_SESSION['Alumni_Email'] = $row['Alumni_Email'];
-		// main.php is a placeholder for the main paige and doesn't exist
-		header("Location: main.php");
+		$_SESSION['Professor_Email'] = $row['Professor_Email'];
 	} else {
 		echo "Login failed. Please try again.";
 	}

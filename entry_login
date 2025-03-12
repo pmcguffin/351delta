@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<body> 
+
+<h2>Choose one</h2>
+
+
+<form> 
+	<input type="radio" id="Admin" name="classification" value="Admin"> 
+	<label for="Admin">Admin</label><br>
+	<input type="radio" id="Alumni" name="classification" value="Alumni">
+	<label for="Alumni">Alumni</label><br> 
+	<input type="radio" id="Employer" name="classification" value="Employer">
+	<label for="Employer">Employer</label><br>
+	<input type="radio" id="Professor" name="classification" value="Professor"> 
+	<label for="Professor">Professor</label><br>
+	<input type="radio" id="Student" name="classification" value="Student"> 
+	<label for="Student">Student</label><br> 
+</form>
+
+</body>
+</html>
