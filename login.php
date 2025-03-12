@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Login</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -206,7 +207,7 @@ if ($result->num_rows > 0) {
 
     // Check verification status for Alumni and Employers
     if (($classification === "Alumni" || $classification === "Employer") && isset($row['verified']) && $row['verified'] == 0) {
-        header("Location: all_user_login.php?error=not_verified");
+        header("Location: login.php?error=not_verified");
         exit();
     }
 
@@ -217,11 +218,11 @@ if ($result->num_rows > 0) {
         header("Location: main.php");
         exit();
     } else {
-        header("Location: all_user_login.php?error=incorrect_password");
+        header("Location: login.php?error=incorrect_password");
         exit();
     }
 } else {
-    header("Location: all_user_login.php?error=user_not_found");
+    header("Location: login.php?error=user_not_found");
     exit();
 }
 
