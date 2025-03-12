@@ -13,15 +13,30 @@ if (!isset($_SESSION['Alumni_Email'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alumni Dashboard</title>
+    <title>Professor Dashboard</title>
+    <link rel="stylesheet" href="css_style.css"> <!-- Link to the external CSS file -->
 </head>
 <body>
-    <h2>Welcome, Alumni!</h2>
-    <p>You're logged in as: <strong><?php echo $_SESSION['Alumni_Email']; ?></strong></p>
 
-    <!-- Add Alumni specific content here -->
-    <p>Here you can access alumni-related features.</p>
+<body>
+    <header>
+        <h1>Alumni Dashboard</h1>
+    </header>
 
-    <a href="logout.php">Logout</a> <!-- Logout option -->
+    <div class="dashboard-container">
+        <div class="dashboard-box">
+            <h2>Welcome, Alumni!</h2>
+            <p>You're logged in as: <strong><?php echo $_SESSION['Alumni_Email']; ?></strong></p>
+
+            <p>Here you can access alumni-related features:</p>
+
+            <a href="account_settings.php" class="btn">Account Settings</a><br>
+            <a href="message.php" class="btn">Messages</a><br>
+            <a href="posts.php" class="btn">Posts</a><br>
+            <a href="events.php" class="btn">Events</a><br><br>
+
+            <a href="logout.php" class="btn logout-btn">Logout</a> <!-- Logout option -->
+        </div>
+    </div>
 </body>
 </html>

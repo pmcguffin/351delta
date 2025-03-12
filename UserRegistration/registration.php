@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -13,97 +12,230 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Initialize variables to store user inputs
+$email = $name = $phone = $password = $major = $major2 = $minor = $grad_year = $grad_year2 = $company = "";
+$userType = "";
+$error = "";
+$success = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $userType = $_POST["user_type"];
+    $userType = $_POST["user_type"] ?? "";
     $email = trim($_POST["email"]);
     $name = trim($_POST["name"]);
     $phone = trim($_POST["phone"]);
     $password = trim($_POST["password"]);
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    if (!empty($_POST["major"])) {
+        $major = trim($_POST["major"]);
+    }
 	
-	if (($userType === "Student" || $userType === "Professor") && !str_ends_with($email, "@cnu.edu")) {
-        echo "Error: Students and Professors must use a CNU email (@cnu.edu).";
-        exit();
+	    if (!empty($_POST["major2"])) {
+        $major2 = trim($_POST["major2"]);
+    }
+	
+    if (!empty($_POST["minor"])) {
+        $minor = trim($_POST["minor"]);
+    }
+    if (!empty($_POST["graduation_year"])) {
+        $grad_year = trim($_POST["graduation_year"]);
+		echo "!!!!!";
+    }
+	
+	    if (!empty($_POST["graduation_year2"])) {
+        $grad_year2 = trim($_POST["graduation_year2"]);
+		echo "!!!!!";
+    }
+	
+	
+    if (!empty($_POST["company"])) {
+        $company = trim($_POST["company"]);
     }
 
-
-	$tables = [
-		"Alumni_Account" => "Alumni_Email",
-		"Professors_Account" => "Professor_Email",
-		"Student_Account" => "Student_Email",
-		"Employers_Account" => "Employer_Email",
-		"Admin_Account" => "Admin_Email"
-	];
-
-	foreach ($tables as $table => $email_column) {
-		$check_sql = "SELECT * FROM $table WHERE $email_column = ?";
-		
-		$stmt = $conn->prepare($check_sql);
-		$stmt->bind_param("s", $email);
-		$stmt->execute();
-		$result = $stmt->get_result();
-
-		if ($result->num_rows > 0) {
-			echo "Error: Email already exists in $table.";
-			exit();
-		}
-	}
-
-
-    switch ($userType) {
-        case "Alumni":
-            $major = trim($_POST["major"]);
-            $grad_year = intval($_POST["graduation_year"]);
-            $sql = "INSERT INTO Alumni_Account (Alumni_Email, Name, Phone_Number, Major, Graduation_Year, Password_Hash) VALUES (?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssssss", $email, $name, $phone, $major, $grad_year, $hashed_password);
-            break;
-        case "Professor":
-            $sql = "INSERT INTO Professors_Account (Professor_Email, Name, Phone_Number, Password_Hash) VALUES (?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssss", $email, $name, $phone, $hashed_password);
-            break;
-        case "Student":
-            $major = trim($_POST["major"]);
-            $minor = trim($_POST["minor"]);
-            $grad_year = intval($_POST["graduation_year"]);
-            $sql = "INSERT INTO Student_Account (Student_Email, Name, Phone_Number, Minor, Major, Graduation_Year, Password_Hash) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sssssss", $email, $name, $phone, $minor, $major, $grad_year, $hashed_password);
-            break;
-        case "Employer":
-            $company = trim($_POST["company"]);
-            $sql = "INSERT INTO Employers_Account (Employer_Email, Name, Phone_Number, Company_Name, Password_Hash) VALUES (?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sssss", $email, $name, $phone, $company, $hashed_password);
-            break;
-        case "Admin":
-            $sql = "INSERT INTO Admin_Account (Admin_Email, Name, Phone_Number, Password_Hash) VALUES (?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssss", $email, $name, $phone, $hashed_password);
-            break;
-        default:
-            echo "Error: Invalid user type.";
-            $conn->close();
-            exit();
+    // Ensure Students & Professors Use a CNU Email
+    if (($userType === "Student" || $userType === "Professor") && !preg_match('/@cnu\.edu$/', $email)) {
+        $error = "❌ Students and Professors must use a CNU email (@cnu.edu).";
     }
 
-    if ($stmt->execute()) {
-        echo "Registration successful!";
-    } else {
-        echo "Error: " . $stmt->error;
+    // Prevent Duplicate Emails Across All Tables
+    if (empty($error)) {
+        $tables = [
+            "Alumni_Account" => "Alumni_Email",
+            "Professors_Account" => "Professor_Email",
+            "Student_Account" => "Student_Email",
+            "Employers_Account" => "Employer_Email",
+            "Admin_Account" => "Admin_Email"
+        ];
+
+        foreach ($tables as $table => $email_column) {
+            $check_sql = "SELECT * FROM $table WHERE $email_column = ?";
+            $stmt = $conn->prepare($check_sql);
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                $error = "❌ Error: This email is already registered.";
+                break;
+            }
+        }
     }
 
-    $stmt->close();
+    // If no errors, insert the user into the database
+    if (empty($error)) {
+        switch ($userType) {
+            case "Alumni":
+                if (empty($grad_year2)) {
+                  $error = "❌ Graduation year is required for Alumni.";
+                   break;
+               }
+				
+                $sql = "INSERT INTO Alumni_Account (Alumni_Email, Name, Phone_Number, Major, Graduation_Year, Password_Hash, verified) 
+                        VALUES (?, ?, ?, ?, ?, ?, 0)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ssssis", $email, $name, $phone, $major2, $grad_year2, $hashed_password);
+                break;
+
+            case "Professor":
+                $sql = "INSERT INTO Professors_Account (Professor_Email, Name, Phone_Number, Password_Hash) 
+                        VALUES (?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ssss", $email, $name, $phone, $hashed_password);
+                break;
+
+            case "Student":
+                if (empty($grad_year)) {
+                    $error = "❌ Graduation year is required for Students.";
+                    break;
+                }
+                $sql = "INSERT INTO Student_Account (Student_Email, Name, Phone_Number, Minor, Major, Graduation_Year, Password_Hash) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("sssssss", $email, $name, $phone, $minor, $major, $grad_year, $hashed_password);
+                break;
+
+            case "Employer":
+                $sql = "INSERT INTO Employers_Account (Employer_Email, Name, Phone_Number, Company_Name, Password_Hash, verified) 
+                        VALUES (?, ?, ?, ?, ?, 0)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("sssss", $email, $name, $phone, $company, $hashed_password);
+                break;
+
+            case "Admin":
+                $sql = "INSERT INTO Admin_Account (Admin_Email, Name, Phone_Number, Password_Hash) 
+                        VALUES (?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ssss", $email, $name, $phone, $hashed_password);
+                break;
+
+            default:
+                $error = "❌ Error: Invalid user type.";
+        }
+
+        if (empty($error) && $stmt->execute()) {
+            $success = "✅ Registration successful! You may now log in.";
+        } elseif (empty($error)) {
+            $error = "❌ Error: " . $stmt->error;
+        }
+
+        $stmt->close();
+    }
+
     $conn->close();
 }
 ?>
 
- 
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #041E42; /* CNU Navy Blue */
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            color: #041E42; /* Navy Blue Text */
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #041E42;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        input[type="text"], 
+        input[type="email"], 
+        input[type="password"], 
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #041E42;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+
+        input[type="submit"] {
+            background-color: #0077C8; /* CNU Light Blue */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #005A9C; /* Darker Blue */
+        }
+    </style>
+
     <script>
         function updateForm() {
             let userType = document.querySelector('input[name="user_type"]:checked').value;
@@ -114,36 +246,58 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </script>
 </head>
 <body>
-    <h2>Register</h2>
-    <form method="post" action="registration.php">
-        <label>Email: <input type="email" name="email" required placeholder="example@gmail.com"></label><br>
-        <label>Name: <input type="text" name="name" required placeholder="John Doe"></label><br>
-        <label>Phone Number: <input type="text" name="phone" required placeholder="123-456-7890"></label><br>
-        <label>Password: <input type="password" name="password" required placeholder="*********"></label><br>
 
-        <h3>Select User Type</h3>
-        <label><input type="radio" name="user_type" value="Alumni" onclick="updateForm()" required> Alumni</label>
-        <label><input type="radio" name="user_type" value="Professor" onclick="updateForm()"> Professor</label>
-        <label><input type="radio" name="user_type" value="Student" onclick="updateForm()"> Student</label>
-        <label><input type="radio" name="user_type" value="Employer" onclick="updateForm()"> Employer</label>
-        <label><input type="radio" name="user_type" value="Admin" onclick="updateForm()"> Admin</label><br><br>
+    <div class="container">
+        <h2>Register</h2>
 
-        <div id="alumniFields" style="display:none;">
-            <label>Major: <input type="text" name="major"></label><br>
-            <label>Graduation Year: <input type="number" name="graduation_year"></label><br>
-        </div>
+        <!-- Display Error or Success Messages -->
+        <?php if (!empty($error)): ?>
+            <p class="error"><?php echo $error; ?></p>
+        <?php endif; ?>
+        
+        <?php if (!empty($success)): ?>
+            <p class="success"><?php echo $success; ?></p>
+        <?php endif; ?>
 
-        <div id="studentFields" style="display:none;">
-            <label>Major: <input type="text" name="major"></label><br>
-            <label>Minor: <input type="text" name="minor"></label><br>
-            <label>Graduation Year: <input type="number" name="graduation_year"></label><br>
-        </div>
+        <form method="post">
+            <label>Email: <input type="email" name="email" required placeholder="example@cnu.edu"></label>
+            <label>Name: <input type="text" name="name" required placeholder="John Doe"></label>
+            <label>Phone Number: <input type="text" name="phone" required placeholder="123-456-7890"></label>
+            <label>Password: <input type="password" name="password" required placeholder="*********"></label>
 
-        <div id="employerFields" style="display:none;">
-            <label>Company Name: <input type="text" name="company"></label><br>
-        </div>
+            <h3>Select User Type</h3>
+            <div class="radio-group">
+                <label><input type="radio" name="user_type" value="Alumni" onclick="updateForm()" required> Alumni</label>
+                <label><input type="radio" name="user_type" value="Professor" onclick="updateForm()"> Professor</label>
+                <label><input type="radio" name="user_type" value="Student" onclick="updateForm()"> Student</label>
+                <label><input type="radio" name="user_type" value="Employer" onclick="updateForm()"> Employer</label>
+                <label><input type="radio" name="user_type" value="Admin" onclick="updateForm()"> Admin</label>
+            </div>
 
-        <input type="submit" value="Register">
-    </form>
+            <div id="alumniFields" class="hidden">
+                <label>Major: <input type="text" name="major2"></label>
+                <label>Graduation Year: <input type="number" name="graduation_year2"></label>
+            </div>
+
+            <div id="studentFields" class="hidden">
+                <label>Major: <input type="text" name="major"></label>
+                <label>Minor: <input type="text" name="minor"></label>
+                <label>Graduation Year: <input type="number" name="graduation_year"></label>
+            </div>
+
+            <div id="employerFields" class="hidden">
+                <label>Company Name: <input type="text" name="company"></label>
+            </div>
+
+            <input type="submit" value="Register">
+			<p style="margin-top: 15px; font-size: 14px; color: #041E42;">
+				Already have an account? 
+				<a href="login.php" style="color: #0077C8; text-decoration: none; font-weight: bold;">
+				Log in
+				</a>
+			</p>
+        </form>
+    </div>
+
 </body>
 </html>
