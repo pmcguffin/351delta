@@ -159,3 +159,37 @@ ALTER TABLE Student_Account ADD COLUMN Password_Hash VARCHAR(255);
 ALTER TABLE Employers_Account ADD COLUMN Password_Hash VARCHAR(255);
 ALTER TABLE Admin_Account ADD COLUMN Password_Hash VARCHAR(255);
 
+<<<<<<< HEAD
+=======
+-- Adding test passwords to user accounts 
+UPDATE admin_account
+SET Password_Hash = 'test' 
+WHERE Admin_Email = 'admin1@univ.edu'
+
+UPDATE alumni_account 
+SET Password_Hash = 'test' 
+WHERE Alumni_Email = 'asmith@email.com';
+
+UPDATE employers_account 
+SET Password_Hash = 'test' 
+WHERE Employer_Email = 'engworks@email.com';
+
+UPDATE professors_account 
+SET Password_Hash = 'test' 
+WHERE Professor_Email = 'profbrown@univ.edu';
+
+UPDATE student_account 
+SET Password_Hash = 'test' 
+WHERE Student_Email = 'emily.k@email.com';
+
+CREATE TABLE Pending_Accounts (
+    Email VARCHAR(255) PRIMARY KEY,
+    Name VARCHAR(255),
+    Phone_Number VARCHAR(20),
+    Major VARCHAR(255),
+    Company_Name VARCHAR(255),
+    Graduation_Year INT,
+    User_Type INT,
+    Password_Hash VARCHAR(255)
+);
+
