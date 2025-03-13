@@ -32,8 +32,8 @@ if (!isset($_SESSION['Alumni_Email'])) {
 
             <a href="account_settings.php" class="btn">Account Settings</a><br>
             <a href="message.php" class="btn">Messages</a><br>
-            <a href="posts.php" class="btn">Posts</a><br>
-            <a href="events.php" class="btn">Events</a><br><br>
+            <a href="jobs.php" class="btn">Jobs</a><br>
+            <a href="findothers.php" class="btn">Search</a><br><br>
 
             <a href="logout.php" class="btn logout-btn">Logout</a> <!-- Logout option -->
         </div>
