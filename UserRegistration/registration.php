@@ -24,8 +24,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = trim($_POST["name"]);
     $phone = trim($_POST["phone"]);
     $password = trim($_POST["password"]);
+	$confirm_password = trim($_POST["confirm_password"]);
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
+	 if ($password !== $confirm_password) {
+        $error = "❌ Error: Passwords do not match.";
+    }
+	
     if (!empty($_POST["major"])) {
         $major = trim($_POST["major"]);
     }
@@ -243,6 +248,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             document.getElementById("alumniFields").style.display = userType === "Alumni" ? "block" : "none";
             document.getElementById("employerFields").style.display = userType === "Employer" ? "block" : "none";
         }
+		
+        function validatePasswords() {
+            let password = document.getElementById("password").value;
+            let confirmPassword = document.getElementById("confirm_password").value;
+            let errorText = document.getElementById("passwordError");
+
+            if (password !== confirmPassword) {
+                errorText.style.display = "block";
+                return false;
+            } else {
+                errorText.style.display = "none";
+                return true;
+            }
+        }
     </script>
 </head>
 <body>
@@ -259,11 +278,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p class="success"><?php echo $success; ?></p>
         <?php endif; ?>
 
-        <form method="post">
+        <form method="post" onsubmit="return validatePasswords();">
             <label>Email: <input type="email" name="email" required placeholder="example@cnu.edu"></label>
             <label>Name: <input type="text" name="name" required placeholder="John Doe"></label>
             <label>Phone Number: <input type="text" name="phone" required placeholder="123-456-7890"></label>
-            <label>Password: <input type="password" name="password" required placeholder="*********"></label>
+            <label>Password: <input type="password" name="password" id="password" required placeholder="*********"></label>
+			<label>Re-enter Password: <input type="password" name="confirm_password" id="confirm_password" required placeholder="*********"></label>
+			<p id="passwordError" class="error" style="display:none;">❌ Passwords do not match!</p>
+
 
             <h3>Select User Type</h3>
             <div class="radio-group">
