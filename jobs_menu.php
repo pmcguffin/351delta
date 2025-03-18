@@ -1,4 +1,13 @@
 <?php
+session_start();
+if (!isset($_SESSION['Employer_Email']) && 
+!isset($_SESSION['Professor_Email']) && 
+!isset($_SESSION['Alumni_Email'])) {
+    header("Location: login.php"); // Redirect to login page if not an employer
+    exit();
+}
+
+
 // Database connection settings
 $host = "localhost";
 $username = "root";
@@ -104,7 +113,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         echo "<table>";
         echo "<tr>
-                <th>Job ID</th>
                 <th>Description</th>
                 <th>Company</th>
                 <th>Major</th>
@@ -113,7 +121,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               
         while($row = $result->fetch_assoc()) {
             echo "<tr>";
-            echo "<td>" . $row["job_id"] . "</td>";
             echo "<td>" . $row["job_description"] . "</td>";
             echo "<td>" . $row["company_name"] . "</td>";
             echo "<td>" . $row["major"] . "</td>";
