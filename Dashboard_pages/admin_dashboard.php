@@ -32,7 +32,7 @@ if (!isset($_SESSION['Admin_Email'])) {
 
             <a href="account_settings.php" class="btn">Account Settings</a><br>
             <a href="message.php" class="btn">Messages</a><br>
-            <a href="posts.php" class="btn">Job Posts</a><br>
+            <a href="jobs_menu.php" class="btn">Job Posts</a><br>
             <!-- <a href="events.php" class="btn">Events</a><br><br> -->
 
             <a href="logout.php" class="btn logout-btn">Logout</a> <!-- Logout option -->
