@@ -107,7 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     <?php
     // Query to fetch all jobs
-    $sql = "SELECT job_id, job_description, company_name, major, alumni_email FROM jobs";
+    $sql = "SELECT job_id, job_description, company_name, major, alumni_email FROM jobs WHERE deleted = 0";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {

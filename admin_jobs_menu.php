@@ -1,9 +1,9 @@
 <?php
 session_start();
-if (!isset($_SESSION['Admin_Email'])) {
-    header("Location: login.php");
-    exit();
-}
+//if (!isset($_SESSION['Admin_Email'])) {
+  //  header("Location: login.php");
+    //exit();
+//}
 ?>
 
 <?php
@@ -24,12 +24,12 @@ if ($conn->connect_error) {
 // Handle confirmed deletion
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && isset($_POST['delete_id'])) {
     $delete_id = $conn->real_escape_string($_POST['delete_id']);
-    $delete_sql = "DELETE FROM jobs WHERE job_id = '$delete_id'";
+    $delete_sql = "UPDATE jobs SET deleted = 1 WHERE job_id = '$delete_id'";
     if ($conn->query($delete_sql) === TRUE) {
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     } else {
-        echo "Error deleting record: " . $conn->error;
+        echo "Error updating record: " . $conn->error;
     }
 }
 ?>
@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && 
     
     <?php
     // Query to fetch all jobs
-    $sql = "SELECT job_id, job_description, company_name, major, alumni_email FROM jobs";
+    $sql = "SELECT job_id, job_description, company_name, major, alumni_email FROM jobs WHERE deleted = 0";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {

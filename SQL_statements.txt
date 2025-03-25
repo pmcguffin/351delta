@@ -201,3 +201,5 @@ CREATE TABLE saved_contacts (
     major VARCHAR(255) NULL,
     graduation_year VARCHAR(50) NULL,
     company_name VARCHAR(255) NULL);
+
+ALTER TABLE jobs ADD deleted BOOLEAN DEFAULT 0;
