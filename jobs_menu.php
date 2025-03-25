@@ -33,12 +33,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $max_id_row = $max_id_result->fetch_assoc();
     $new_job_id = ($max_id_row['max_id'] !== null) ? $max_id_row['max_id'] + 1 : 1;
     
-    // Insert new job with null alumni_email
-    $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, alumni_email) 
-            VALUES (?, ?, ?, ?, NULL)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("isss", $new_job_id, $job_description, $company_name, $major);
-    
+    // Insert new job with alumni_email if alumni is logged in
+    if (isset($_SESSION['Alumni_Email'])) {
+        $alumni_email = $_SESSION['Alumni_Email'];
+        $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, alumni_email) 
+                VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("issss", $new_job_id, $job_description, $company_name, $major, $alumni_email);
+    } else {
+        $sql = "INSERT INTO jobs (job_id, job_description, company_name, major) 
+                VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("isss", $new_job_id, $job_description, $company_name, $major);
+    }
+
     if ($stmt->execute()) {
         echo "<p>Job posting created successfully!</p>";
     } else {
