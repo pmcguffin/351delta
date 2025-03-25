@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['Student_Email'])) {
-    header("Location: login.php"); // Redirect to login page if not an employer
+    header("Location: login.php"); // Redirect to login page if not a student
     exit();
 }
 ?>
