@@ -85,5 +85,6 @@ if ($conn->connect_error) {
     <?php
     $conn->close();
     ?>
+    <p><a href="student_dashboard.php">Return to Dashboard</a></p>
 </body>
 </html>

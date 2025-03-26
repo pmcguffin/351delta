@@ -159,5 +159,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && 
     <?php
     $conn->close();
     ?>
+    <p><a href="admin_dashboard.php">Return to Dashboard</a></p>
 </body>
 </html>
