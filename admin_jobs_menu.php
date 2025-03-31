@@ -1,9 +1,9 @@
 <?php
 session_start();
-//if (!isset($_SESSION['Admin_Email'])) {
-  //  header("Location: login.php");
-    //exit();
-//}
+if (!isset($_SESSION['Admin_Email'])) {
+    header("Location: login.php");
+    exit();
+}
 ?>
 
 <?php
@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && 
     
     <?php
     // Query to fetch all jobs
-    $sql = "SELECT job_id, job_description, company_name, major, alumni_email FROM jobs WHERE deleted = 0";
+    $sql = "SELECT job_id, job_description, company_name, major, poster_email FROM jobs WHERE deleted = 0";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && 
                 <th>Description</th>
                 <th>Company</th>
                 <th>Major</th>
-                <th>Alumni Email</th>
+                <th>Email</th>
                 <th>Action</th>
               </tr>";
               
@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && 
             echo "<td>" . $row["job_description"] . "</td>";
             echo "<td>" . $row["company_name"] . "</td>";
             echo "<td>" . $row["major"] . "</td>";
-            echo "<td>" . ($row["alumni_email"] ?? 'N/A') . "</td>";
+            echo "<td>" . ($row["poster_email"] ?? 'N/A') . "</td>";
             echo "<td>";
             echo "<form method='POST' action='" . $_SERVER['PHP_SELF'] . "'>";
             echo "<input type='hidden' name='delete_id' value='" . $row["job_id"] . "'>";

@@ -11,5 +11,13 @@ if (isset($_SESSION['Professor_Email'])) {
 if (isset($_SESSION['Alumni_Email'])) {  
     header("Location: alumni_dashboard.php"); 
     exit;
+}
+if (isset($_SESSION['Admin_Email'])) {  
+    header("Location: admin_dashboard.php"); 
+    exit;
+}
+if (isset($_SESSION['Student_Email'])) {  
+    header("Location: Student_dashboard.php"); 
+    exit;
 } 
 ?>
