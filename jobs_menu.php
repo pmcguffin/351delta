@@ -35,18 +35,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_job_id = ($max_id_row['max_id'] !== null) ? $max_id_row['max_id'] + 1 : 1;
     
     // Insert new job with alumni_email if alumni is logged in
-    if (isset($_SESSION['Alumni_Email'])) {
-        $alumni_email = $_SESSION['Alumni_Email'];
-        $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, alumni_email) 
-                VALUES (?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("issss", $new_job_id, $job_description, $company_name, $major, $alumni_email);
-    } else {
-        $sql = "INSERT INTO jobs (job_id, job_description, company_name, major) 
-                VALUES (?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("isss", $new_job_id, $job_description, $company_name, $major);
-    }
+    $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, poster_email) 
+            VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("isss", $new_job_id, $job_description, $company_name, $major, $_SESSION);
+    
 
     if ($stmt->execute()) {
         echo "<p>Job posting created successfully!</p>";
@@ -116,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     <?php
     // Query to fetch all jobs
-    $sql = "SELECT job_id, job_description, company_name, major, alumni_email FROM jobs WHERE deleted = 0";
+    $sql = "SELECT job_id, job_description, company_name, major, poster_email FROM jobs WHERE deleted = 0";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
@@ -125,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <th>Description</th>
                 <th>Company</th>
                 <th>Major</th>
-                <th>Alumni Email</th>
+                <th>Email</th>
               </tr>";
               
         while($row = $result->fetch_assoc()) {
@@ -133,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<td>" . $row["job_description"] . "</td>";
             echo "<td>" . $row["company_name"] . "</td>";
             echo "<td>" . $row["major"] . "</td>";
-            echo "<td>" . ($row["alumni_email"] ?? 'N/A') . "</td>";
+            echo "<td>" . ($row["poster_email"] ?? 'N/A') . "</td>";
             echo "</tr>";
         }
         echo "</table>";
