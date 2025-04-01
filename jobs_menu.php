@@ -1,13 +1,12 @@
 <?php
 session_start();
 if (!isset($_SESSION['Employer_Email']) && 
-!isset($_SESSION['Professor_Email']) && 
-!isset($_SESSION['Alumni_Email']) && 
-!isset($_SESSION['Admin_Email'])) {
-    header("Location: login.php"); // Redirect to login page if not an employer
+    !isset($_SESSION['Professor_Email']) && 
+    !isset($_SESSION['Alumni_Email']) && 
+    !isset($_SESSION['Admin_Email'])) {
+    header("Location: login.php");
     exit();
 }
-
 
 // Database connection settings
 $host = "localhost";
@@ -23,50 +22,60 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Get current user's email
+$current_user_email = $_SESSION['Employer_Email'] ?? 
+                     $_SESSION['Professor_Email'] ?? 
+                     $_SESSION['Alumni_Email'] ?? 
+                     $_SESSION['Admin_Email'] ?? '';
+
+// Handle job deletion
+if (isset($_GET['delete_job_id'])) {
+    $job_id = $_GET['delete_job_id'];
+    
+    $sql = "SELECT poster_email FROM jobs WHERE job_id = ? AND deleted = 0";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $job_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        if ($row['poster_email'] === $current_user_email) {
+            $delete_sql = "UPDATE jobs SET deleted = 1 WHERE job_id = ?";
+            $delete_stmt = $conn->prepare($delete_sql);
+            $delete_stmt->bind_param("i", $job_id);
+            
+            if ($delete_stmt->execute()) {
+                echo "<p style='color: green;'>Job deleted successfully!</p>";
+            } else {
+                echo "<p style='color: red;'>Error deleting job: " . $conn->error . "</p>";
+            }
+            $delete_stmt->close();
+        }
+    }
+    $stmt->close();
+}
+
+// Handle job creation
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $job_description = $_POST['job_description'];
     $company_name = $_POST['company_name'];
     $major = $_POST['major'];
     
-    // Get the highest current job_id
     $max_id_query = "SELECT MAX(job_id) as max_id FROM jobs";
     $max_id_result = $conn->query($max_id_query);
     $max_id_row = $max_id_result->fetch_assoc();
     $new_job_id = ($max_id_row['max_id'] !== null) ? $max_id_row['max_id'] + 1 : 1;
     
-    // Insert new job with alumni_email if alumni is logged in
-    if (isset($_SESSION['Admin_Email'])) {
-        $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, poster_email) 
+    $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, poster_email) 
             VALUES (?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("issss", $new_job_id, $job_description, $company_name, $major, $_SESSION['Admin_Email']);
-    }
-
-    if (isset($_SESSION['Professor_Email'])) {
-        $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, poster_email) 
-            VALUES (?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("issss", $new_job_id, $job_description, $company_name, $major, $_SESSION['Professor_Email']);
-    }
-
-    if (isset($_SESSION['Alumni_Email'])) {
-        $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, poster_email) 
-            VALUES (?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("issss", $new_job_id, $job_description, $company_name, $major, $_SESSION['Alumni_Email']);
-    }
-
-    if (isset($_SESSION['Employer_Email'])) {
-        $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, poster_email) 
-            VALUES (?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("issss", $new_job_id, $job_description, $company_name, $major, $_SESSION['Employer_Email']);
-    }
-
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("issss", $new_job_id, $job_description, $company_name, $major, $current_user_email);
+    
     if ($stmt->execute()) {
-        echo "<p>Job posting created successfully!</p>";
+        echo "<p style='color: green;'>Job posting created successfully!</p>";
     } else {
-        echo "<p>Error creating job posting: " . $conn->error . "</p>";
+        echo "<p style='color: red;'>Error creating job posting: " . $conn->error . "</p>";
     }
     $stmt->close();
 }
@@ -124,13 +133,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .job-form button:hover {
             background-color: #45a049;
         }
+        .delete-link {
+            color: red;
+            text-decoration: none;
+        }
+        .delete-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <h1>Job Listings Dashboard</h1>
     
     <?php
-    // Query to fetch all jobs
+    // Display jobs
     $sql = "SELECT job_id, job_description, company_name, major, poster_email FROM jobs WHERE deleted = 0";
     $result = $conn->query($sql);
 
@@ -141,6 +157,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <th>Company</th>
                 <th>Major</th>
                 <th>Email</th>
+                <th>Action</th>
               </tr>";
               
         while($row = $result->fetch_assoc()) {
@@ -149,6 +166,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<td>" . $row["company_name"] . "</td>";
             echo "<td>" . $row["major"] . "</td>";
             echo "<td>" . ($row["poster_email"] ?? 'N/A') . "</td>";
+            
+            echo "<td>";
+            if ($row["poster_email"] === $current_user_email) {
+                echo "<a href='?delete_job_id=" . $row["job_id"] . "' 
+                       class='delete-link' 
+                       onclick='return confirm(\"Are you sure you want to delete this job?\")'>Delete</a>";
+            }
+            echo "</td>";
+            
             echo "</tr>";
         }
         echo "</table>";
@@ -174,9 +200,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
     </div>
     
+    <p><a href="return_to_dashboard.php">Return to Dashboard</a></p>
+    
     <?php
     $conn->close();
     ?>
-    <p><a href="return_to_dashboard.php">Return to Dashboard</a></p>
 </body>
 </html>
