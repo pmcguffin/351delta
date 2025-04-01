@@ -140,6 +140,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .delete-link:hover {
             text-decoration: underline;
         }
+        .view-link {
+            color: blue;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+        .view-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -172,6 +180,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<a href='?delete_job_id=" . $row["job_id"] . "' 
                        class='delete-link' 
                        onclick='return confirm(\"Are you sure you want to delete this job?\")'>Delete</a>";
+                echo "<a href='view_applicants.php?job_id=" . $row["job_id"] . "' 
+                       class='view-link'>View Applicants</a>";
             }
             echo "</td>";
             

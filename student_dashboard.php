@@ -3,7 +3,7 @@ session_start();
 
 // Check if the student is logged in
 if (!isset($_SESSION['Student_Email'])) {
-    header("Location: main.php"); // Redirect to the login page if not authenticated
+    header("Location: login.php"); // Redirect to the login page if not authenticated
     exit();
 }
 
@@ -34,7 +34,7 @@ if (!isset($_SESSION['Student_Email'])) {
             <!-- Buttons for different professor features -->
             <a href="account_settings.php" class="btn">Account Settings</a><br>
             <a href="message.php" class="btn">Message</a><br>
-            <a href="jobs.php" class="btn">Job Posts</a><br>
+            <a href="student_jobs_menu.php" class="btn">Job Posts</a><br>
             <!-- <a href="students.php" class="btn">Students</a><br><br> -->
 
             <a href="logout.php" class="btn logout-btn">Logout</a> <!-- Logout option -->
