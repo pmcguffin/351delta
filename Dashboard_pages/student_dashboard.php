@@ -16,7 +16,7 @@ if (!isset($_SESSION['Student_Email'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professor Dashboard</title>
+    <title>Student Dashboard</title>
     <link rel="stylesheet" href="css_style.css"> <!-- Link to the external CSS file -->
 </head>
 <body>
@@ -33,7 +33,7 @@ if (!isset($_SESSION['Student_Email'])) {
 
             <!-- Buttons for different professor features -->
             <a href="account_settings.php" class="btn">Account Settings</a><br>
-            <a href="messages.php" class="btn">Messages</a><br>
+            <a href="message.php" class="btn">Message</a><br>
             <a href="jobs.php" class="btn">Job Posts</a><br>
             <!-- <a href="students.php" class="btn">Students</a><br><br> -->
 
