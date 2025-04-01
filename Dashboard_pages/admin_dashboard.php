@@ -32,10 +32,13 @@ if (!isset($_SESSION['Admin_Email'])) {
 
             <a href="account_settings.php" class="btn">Account Settings</a><br>
             <a href="message.php" class="btn">Messages</a><br>
-            <a href="posts.php" class="btn">Job Posts</a><br>
+            <a href="jobs_menu.php" class="btn">Job Posts</a><br>
+			<a href="admin_verify.php" class="btn">Approve new accounts</a><br>
+            <a href="admin_jobs_menu.php" class="btn">Manage Job Posts</a><br>
             <!-- <a href="events.php" class="btn">Events</a><br><br> -->
+	    <a href="findotherspt2.php" class="btn">Find Others</a><br>
 
-            <a href="logout.php" class="btn logout-btn">Logout</a> <!-- Logout option -->
+            <a href="login.php" class="btn logout-btn">Logout</a> <!-- Logout option -->
         </div>
     </div>
 </body>
