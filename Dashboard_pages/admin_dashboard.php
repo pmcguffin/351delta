@@ -36,6 +36,7 @@ if (!isset($_SESSION['Admin_Email'])) {
 			<a href="admin_verify.php" class="btn">Approve new accounts</a><br>
             <a href="admin_jobs_menu.php" class="btn">Manage Job Posts</a><br>
             <!-- <a href="events.php" class="btn">Events</a><br><br> -->
+	    <a href="findotherspt2.php" class="btn">Find Others</a><br>
 
             <a href="login.php" class="btn logout-btn">Logout</a> <!-- Logout option -->
         </div>
