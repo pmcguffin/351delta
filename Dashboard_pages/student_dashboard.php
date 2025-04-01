@@ -33,9 +33,15 @@ if (!isset($_SESSION['Student_Email'])) {
 
             <!-- Buttons for different professor features -->
             <a href="account_settings.php" class="btn">Account Settings</a><br>
+<<<<<<< HEAD
             <a href="message.php" class="btn">Message</a><br>
             <a href="jobs.php" class="btn">Job Posts</a><br>
+=======
+            <a href="messages.php" class="btn">Messages</a><br>
+            <a href="student_jobs_menu.php" class="btn">Job Posts</a><br>
+>>>>>>> 67b31639249573eed35a353a9ee5b23b944f9576
             <!-- <a href="students.php" class="btn">Students</a><br><br> -->
+            <a href="findotherspt2.php" class="btn">Find Others</a><br>
 
             <a href="logout.php" class="btn logout-btn">Logout</a> <!-- Logout option -->
         </div>

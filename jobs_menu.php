@@ -1,4 +1,14 @@
 <?php
+session_start();
+if (!isset($_SESSION['Employer_Email']) && 
+!isset($_SESSION['Professor_Email']) && 
+!isset($_SESSION['Alumni_Email']) && 
+!isset($_SESSION['Admin_Email'])) {
+    header("Location: login.php"); // Redirect to login page if not an employer
+    exit();
+}
+
+
 // Database connection settings
 $host = "localhost";
 $username = "root";
@@ -24,12 +34,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $max_id_row = $max_id_result->fetch_assoc();
     $new_job_id = ($max_id_row['max_id'] !== null) ? $max_id_row['max_id'] + 1 : 1;
     
-    // Insert new job with null alumni_email
-    $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, alumni_email) 
-            VALUES (?, ?, ?, ?, NULL)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("isss", $new_job_id, $job_description, $company_name, $major);
-    
+    // Insert new job with alumni_email if alumni is logged in
+    if (isset($_SESSION['Admin_Email'])) {
+        $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, poster_email) 
+            VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("issss", $new_job_id, $job_description, $company_name, $major, $_SESSION['Admin_Email']);
+    }
+
+    if (isset($_SESSION['Professor_Email'])) {
+        $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, poster_email) 
+            VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("issss", $new_job_id, $job_description, $company_name, $major, $_SESSION['Professor_Email']);
+    }
+
+    if (isset($_SESSION['Alumni_Email'])) {
+        $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, poster_email) 
+            VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("issss", $new_job_id, $job_description, $company_name, $major, $_SESSION['Alumni_Email']);
+    }
+
+    if (isset($_SESSION['Employer_Email'])) {
+        $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, poster_email) 
+            VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("issss", $new_job_id, $job_description, $company_name, $major, $_SESSION['Employer_Email']);
+    }
+
     if ($stmt->execute()) {
         echo "<p>Job posting created successfully!</p>";
     } else {
@@ -98,26 +131,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     <?php
     // Query to fetch all jobs
-    $sql = "SELECT job_id, job_description, company_name, major, alumni_email FROM jobs";
+    $sql = "SELECT job_id, job_description, company_name, major, poster_email FROM jobs WHERE deleted = 0";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
         echo "<table>";
         echo "<tr>
-                <th>Job ID</th>
                 <th>Description</th>
                 <th>Company</th>
                 <th>Major</th>
-                <th>Alumni Email</th>
+                <th>Email</th>
               </tr>";
               
         while($row = $result->fetch_assoc()) {
             echo "<tr>";
-            echo "<td>" . $row["job_id"] . "</td>";
             echo "<td>" . $row["job_description"] . "</td>";
             echo "<td>" . $row["company_name"] . "</td>";
             echo "<td>" . $row["major"] . "</td>";
-            echo "<td>" . ($row["alumni_email"] ?? 'N/A') . "</td>";
+            echo "<td>" . ($row["poster_email"] ?? 'N/A') . "</td>";
             echo "</tr>";
         }
         echo "</table>";
@@ -146,5 +177,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php
     $conn->close();
     ?>
+    <p><a href="return_to_dashboard.php">Return to Dashboard</a></p>
 </body>
 </html>
