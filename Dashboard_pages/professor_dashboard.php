@@ -34,6 +34,7 @@ if (!isset($_SESSION['Professor_Email'])) {
             <a href="messages.php" class="btn">Messages</a><br>
             <a href="jobs_menu.php" class="btn">Job Posts</a><br>
             <!-- <a href="students.php" class="btn">Students</a><br><br> -->
+            <a href="findotherspt2.php" class="btn">Find Others</a><br>
 
             <a href="logout.php" class="btn logout-btn">Logout</a> <!-- Logout option -->
         </div>
