@@ -4,7 +4,7 @@ session_start();
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "351delta2";
+$dbname = "351delta";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
