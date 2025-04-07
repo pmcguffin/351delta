@@ -37,7 +37,7 @@ if (!isset($_SESSION['Student_Email'])) {
             <a href="message.php" class="btn">Message</a><br>
             <a href="jobs.php" class="btn">Job Posts</a><br>
 =======
-            <a href="messages.php" class="btn">Messages</a><br>
+            <a href="messages_ui.php" class="btn">Messages</a><br>
             <a href="student_jobs_menu.php" class="btn">Job Posts</a><br>
 >>>>>>> 67b31639249573eed35a353a9ee5b23b944f9576
             <!-- <a href="students.php" class="btn">Students</a><br><br> -->
