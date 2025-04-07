@@ -213,3 +213,43 @@ CREATE TABLE saved_contacts (
 ALTER TABLE jobs ADD deleted BOOLEAN DEFAULT 0;
 ALTER TABLE jobs ADD COLUMN poster_email VARCHAR(255);
 >>>>>>> 
+
+-- Dropping old chat and chat_information table and adding the updated ones
+
+ALTER TABLE `chat` DROP PRIMARY KEY;
+ALTER TABLE `chat` DROP INDEX `Alumni_Email`;
+ALTER TABLE `chat` DROP INDEX `Professor_Email`;
+ALTER TABLE `chat` DROP INDEX `Employer_Email`;
+ALTER TABLE `chat` DROP INDEX `Student_Email`;
+DROP TABLE chat; 
+ALTER TABLE `chat_information` DROP PRIMARY KEY;
+Drop table chat_information; 
+
+CREATE TABLE Chat (
+    Sender_Email VARCHAR(255) NOT NULL,
+    Receiver_Email VARCHAR(255) NOT NULL,
+    Chat_Time TIMESTAMP NOT NULL,
+    Chatter VARCHAR(255) NOT NULL,
+    Alumni_Email VARCHAR(255) NULL,  
+    Professor_Email VARCHAR(255) NULL, 
+    Employer_Email VARCHAR(255) NULL, 
+    Student_Email VARCHAR(255) NULL,
+    PRIMARY KEY (Sender_Email, Receiver_Email, Chat_Time),
+    FOREIGN KEY (Alumni_Email) REFERENCES Alumni_Account(Alumni_Email),
+    FOREIGN KEY (Professor_Email) REFERENCES Professors_Account(Professor_Email),
+    FOREIGN KEY (Employer_Email) REFERENCES Employers_Account(Employer_Email),
+    FOREIGN KEY (Student_Email) REFERENCES Student_Account(Student_Email)
+);
+
+CREATE TABLE Chat_Information (
+    Sender_Email VARCHAR(255) NOT NULL,
+    Receiver_Email VARCHAR(255) NOT NULL,
+    Chat_Time TIMESTAMP NOT NULL,
+    Chat_Data TEXT,
+    Message_Contents TEXT,
+    PRIMARY KEY (Sender_Email, Receiver_Email, Chat_Time),
+    FOREIGN KEY (Sender_Email, Receiver_Email, Chat_Time) 
+        REFERENCES Chat(Sender_Email, Receiver_Email, Chat_Time) 
+        ON DELETE CASCADE
+);
+
