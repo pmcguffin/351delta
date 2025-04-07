@@ -253,3 +253,7 @@ CREATE TABLE Chat_Information (
         ON DELETE CASCADE
 );
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8357802ca5768a8fa56690ac996970ec084c98ea

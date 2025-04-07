@@ -31,7 +31,7 @@ if (!isset($_SESSION['Admin_Email'])) {
             <p>Here you can manage all admin features:</p>
 
             <a href="account_settings.php" class="btn">Account Settings</a><br>
-            <a href="message.php" class="btn">Messages</a><br>
+            <a href="message_ui.php" class="btn">Messages</a><br>
             <a href="jobs_menu.php" class="btn">Job Posts</a><br>
 			<a href="admin_verify.php" class="btn">Approve new accounts</a><br>
             <a href="admin_jobs_menu.php" class="btn">Manage Job Posts</a><br>

@@ -31,7 +31,7 @@ if (!isset($_SESSION['Alumni_Email'])) {
             <p>Here you can access alumni-related features:</p>
 
             <a href="account_settings.php" class="btn">Account Settings</a><br>
-            <a href="message.php" class="btn">Messages</a><br>
+            <a href="message_ui.php" class="btn">Messages</a><br>
             <a href="jobs_menu.php" class="btn">Jobs</a><br>
             <a href="findothers.php" class="btn">Search</a><br><br>
             <a href="findotherspt2.php" class="btn">Find Others</a><br>
