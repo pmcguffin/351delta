@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/autoload.php'; // Include PHPMailer
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -12,7 +17,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Initialize variables to store user inputs
+// Initialize variables
 $email = $name = $phone = $password = $major = $major2 = $minor = $grad_year = $grad_year2 = $company = "";
 $userType = "";
 $error = "";
@@ -24,13 +29,85 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = trim($_POST["name"]);
     $phone = trim($_POST["phone"]);
     $password = trim($_POST["password"]);
-	$confirm_password = trim($_POST["confirm_password"]);
+    $confirm_password = trim($_POST["confirm_password"]);
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-	 if ($password !== $confirm_password) {
+    if ($password !== $confirm_password) {
         $error = "❌ Error: Passwords do not match.";
     }
-	
+
+    // Generate a random 6-digit confirmation code
+    $confirmation_code = mt_rand(100000, 999999);
+    $_SESSION['confirmation_code'] = $confirmation_code;
+    $_SESSION['email'] = $email;
+    $_SESSION['hashed_password'] = $hashed_password;
+    $_SESSION['name'] = $name;
+    $_SESSION['phone'] = $phone;
+    $_SESSION['userType'] = $userType;
+
+    // Ensure Students & Professors Use a CNU Email
+    if (($userType === "Student" || $userType === "Professor") && !preg_match('/@cnu\.edu$/', $email)) {
+        $error = "❌ Students and Professors must use a CNU email (@cnu.edu).";
+    }
+
+    // Prevent Duplicate Emails Across All Tables
+    if (empty($error)) {
+        $tables = [
+            "Alumni_Account" => "Alumni_Email",
+            "Professors_Account" => "Professor_Email",
+            "Student_Account" => "Student_Email",
+            "Employers_Account" => "Employer_Email",
+            "Admin_Account" => "Admin_Email"
+        ];
+
+        foreach ($tables as $table => $email_column) {
+            $check_sql = "SELECT * FROM $table WHERE $email_column = ?";
+            $stmt = $conn->prepare($check_sql);
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                $error = "❌ Error: This email is already registered.";
+                break;
+            }
+        }
+    }
+
+    // If no errors, send the confirmation email
+    if (empty($error)) {
+        $mail = new PHPMailer(true);
+
+        try {
+            // SMTP settings
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com'; 
+            $mail->SMTPAuth = true;
+            $mail->Username = 'noreplycnusec@gmail.com'; // Your sender email
+            $mail->Password = 'psqjptsueffiznxe'; // Use an app password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            // Recipients
+            $mail->setFrom('noreplycnusec@gmail.com', 'CNU Registration');
+            $mail->addAddress($email); // User's email
+
+            // Email content
+            $mail->isHTML(true);
+            $mail->Subject = 'Email Verification Code';
+            $mail->Body = "Hello $name,<br><br>Your email verification code is: <b>$confirmation_code</b><br><br>Enter this code to complete your registration.";
+
+            $mail->send();
+            header("Location: verify_email.php"); // Redirect to verification page
+            exit();
+        } catch (Exception $e) {
+            $error = "❌ Email could not be sent. Error: " . $mail->ErrorInfo;
+        }
+    }
+
+}
+
+
     if (!empty($_POST["major"])) {
         $major = trim($_POST["major"]);
     }
@@ -133,8 +210,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->bind_param("ssss", $email, $name, $phone, $hashed_password);
                 break;
 
-            default:
-                $error = "❌ Error: Invalid user type.";
+
         }
 
         if (empty($error) && $stmt->execute()) {
@@ -147,7 +223,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $conn->close();
-}
+
 ?>
 
 
@@ -274,9 +350,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p class="error"><?php echo $error; ?></p>
         <?php endif; ?>
         
-        <?php if (!empty($success)): ?>
-            <p class="success"><?php echo $success; ?></p>
-        <?php endif; ?>
+		<?php if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($success)): ?>
+			<p class="success"><?php echo $success; ?></p>
+		<?php endif; ?>
 
         <form method="post" onsubmit="return validatePasswords();">
             <label>Email: <input type="email" name="email" required placeholder="example@cnu.edu"></label>
