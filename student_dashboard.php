@@ -17,7 +17,7 @@ if (!isset($_SESSION['Student_Email'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
-    <link rel="stylesheet" href="/351delta/css_style/css_style.css"> <!-- Link to the external CSS file -->
+    <link rel="stylesheet" href="/351delta/css_style.css"> <!-- Link to the external CSS file -->
 </head>
 <body>
     <header>

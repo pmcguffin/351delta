@@ -1,6 +1,7 @@
 <?php
 session_start();
 include('Connection.php');
+include('home_button.php'); 
 
 if (!isset($_SESSION['user_email'])) {
     header("Location: login.php");
@@ -27,6 +28,8 @@ $contacts = $stmt->get_result();
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messaging System</title>
@@ -85,9 +88,12 @@ $contacts = $stmt->get_result();
             padding: 10px;
             margin: 5px;
             border-radius: 10px; 
-            max-width: 70%;
+            max-width: 50%;
             position: relative;
             display: inline-block;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
         }
         .sent {
             align-self: flex-end;
