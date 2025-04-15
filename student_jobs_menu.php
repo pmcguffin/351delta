@@ -60,6 +60,8 @@ if (isset($_GET['apply_job_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Listings Dashboard</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="css_style.css">
     <style>
         table {
             border-collapse: collapse;
@@ -80,18 +82,6 @@ if (isset($_GET['apply_job_id'])) {
         tr:hover {
             background-color: #f5f5f5;
         }
-        .apply-btn {
-            padding: 5px 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .apply-btn:hover {
-            background-color: #45a049;
-        }
         .applied-text {
             color: #666;
             font-style: italic;
@@ -99,57 +89,63 @@ if (isset($_GET['apply_job_id'])) {
     </style>
 </head>
 <body>
-    <h1>Job Listings Dashboard</h1>
+    <header>
+        <h1>Job Listings Dashboard</h1>
+    </header>
     
-    <?php
-    // Query to fetch all jobs
-    $sql = "SELECT job_id, job_description, company_name, major, alumni_email FROM jobs WHERE deleted = 0";
-    $result = $conn->query($sql);
+    <div class="dashboard-container">
+        <div class="dashboard-box">
+            <?php
+            // Query to fetch all jobs
+            $sql = "SELECT job_id, job_description, company_name, major, alumni_email FROM jobs WHERE deleted = 0";
+            $result = $conn->query($sql);
 
-    if ($result->num_rows > 0) {
-        echo "<table>";
-        echo "<tr>
-                <th>Description</th>
-                <th>Company</th>
-                <th>Major</th>
-                <th>Alumni Email</th>
-                <th>Action</th>
-              </tr>";
-              
-        while($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>" . $row["job_description"] . "</td>";
-            echo "<td>" . $row["company_name"] . "</td>";
-            echo "<td>" . $row["major"] . "</td>";
-            echo "<td>" . ($row["alumni_email"] ?? 'N/A') . "</td>";
-            
-            // Check if student has applied
-            $student_email = $_SESSION['Student_Email'];
-            $check_sql = "SELECT * FROM applications WHERE student_email = ? AND job_id = ?";
-            $check_stmt = $conn->prepare($check_sql);
-            $check_stmt->bind_param("si", $student_email, $row["job_id"]);
-            $check_stmt->execute();
-            $check_result = $check_stmt->get_result();
-            
-            echo "<td>";
-            if ($check_result->num_rows > 0) {
-                echo "<span class='applied-text'>Applied</span>";
+            if ($result->num_rows > 0) {
+                echo "<table>";
+                echo "<tr>
+                        <th>Description</th>
+                        <th>Company</th>
+                        <th>Major</th>
+                        <th>Alumni Email</th>
+                        <th>Action</th>
+                      </tr>";
+                      
+                while($row = $result->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>" . $row["job_description"] . "</td>";
+                    echo "<td>" . $row["company_name"] . "</td>";
+                    echo "<td>" . $row["major"] . "</td>";
+                    echo "<td>" . ($row["alumni_email"] ?? 'N/A') . "</td>";
+                    
+                    // Check if student has applied
+                    $student_email = $_SESSION['Student_Email'];
+                    $check_sql = "SELECT * FROM applications WHERE student_email = ? AND job_id = ?";
+                    $check_stmt = $conn->prepare($check_sql);
+                    $check_stmt->bind_param("si", $student_email, $row["job_id"]);
+                    $check_stmt->execute();
+                    $check_result = $check_stmt->get_result();
+                    
+                    echo "<td>";
+                    if ($check_result->num_rows > 0) {
+                        echo "<span class='applied-text'>Applied</span>";
+                    } else {
+                        echo "<a href='?apply_job_id=" . $row["job_id"] . "' class='btn'>Apply</a>";
+                    }
+                    echo "</td>";
+                    
+                    $check_stmt->close();
+                    echo "</tr>";
+                }
+                echo "</table>";
+                echo "<p>Total jobs: " . $result->num_rows . "</p>";
             } else {
-                echo "<a href='?apply_job_id=" . $row["job_id"] . "' class='apply-btn'>Apply</a>";
+                echo "<p>No jobs found in the database.</p>";
             }
-            echo "</td>";
+            ?>
             
-            $check_stmt->close();
-            echo "</tr>";
-        }
-        echo "</table>";
-        echo "<p>Total jobs: " . $result->num_rows . "</p>";
-    } else {
-        echo "<p>No jobs found in the database.</p>";
-    }
-    ?>
-    
-    <p><a href="student_dashboard.php">Return to Dashboard</a></p>
+            <p><a href="student_dashboard.php" class="btn">Return to Dashboard</a></p>
+        </div>
+    </div>
     
     <?php
     $conn->close();

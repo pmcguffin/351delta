@@ -87,6 +87,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Listings Dashboard</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="css_style.css">
     <style>
         table {
             border-collapse: collapse;
@@ -122,17 +124,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             max-width: 400px;
             padding: 5px;
         }
-        .job-form button {
-            margin-top: 10px;
-            padding: 5px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .job-form button:hover {
-            background-color: #45a049;
-        }
         .delete-link {
             color: red;
             text-decoration: none;
@@ -151,102 +142,109 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
 </head>
 <body>
-    <h1>Job Listings Dashboard</h1>
+    <header>
+        <h1>Job Listings Dashboard</h1>
+    </header>
     
-    <?php
-    // Display active jobs
-    $sql = "SELECT job_id, job_description, company_name, major, poster_email FROM jobs WHERE deleted = 0";
-    $result = $conn->query($sql);
+    <div class="dashboard-container">
+        <div class="dashboard-box">
+            <?php
+            // Display active jobs
+            $sql = "SELECT job_id, job_description, company_name, major, poster_email FROM jobs WHERE deleted = 0";
+            $result = $conn->query($sql);
 
-    if ($result->num_rows > 0) {
-        echo "<table>";
-        echo "<tr>
-                <th>Description</th>
-                <th>Company</th>
-                <th>Major</th>
-                <th>Email</th>
-                <th>Action</th>
-              </tr>";
-              
-        while($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>" . $row["job_description"] . "</td>";
-            echo "<td>" . $row["company_name"] . "</td>";
-            echo "<td>" . $row["major"] . "</td>";
-            echo "<td>" . ($row["poster_email"] ?? 'N/A') . "</td>";
-            
-            echo "<td>";
-            if ($row["poster_email"] === $current_user_email) {
-                echo "<a href='?delete_job_id=" . $row["job_id"] . "' 
-                       class='delete-link' 
-                       onclick='return confirm(\"Are you sure you want to delete this job?\")'>Delete</a>";
-                echo "<a href='view_applicants.php?job_id=" . $row["job_id"] . "' 
-                       class='view-link'>View Applicants</a>";
+            if ($result->num_rows > 0) {
+                echo "<table>";
+                echo "<tr>
+                        <th>Description</th>
+                        <th>Company</th>
+                        <th>Major</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                      </tr>";
+                      
+                while($row = $result->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>" . $row["job_description"] . "</td>";
+                    echo "<td>" . $row["company_name"] . "</td>";
+                    echo "<td>" . $row["major"] . "</td>";
+                    echo "<td>" . ($row["poster_email"] ?? 'N/A') . "</td>";
+                    
+                    echo "<td>";
+                    if ($row["poster_email"] === $current_user_email) {
+                        echo "<a href='?delete_job_id=" . $row["job_id"] . "' 
+                               class='delete-link btn' 
+                               onclick='return confirm(\"Are you sure you want to delete this job?\")'>Delete</a>";
+                        echo "<a href='view_applicants.php?job_id=" . $row["job_id"] . "' 
+                               class='view-link btn' 
+                               style='color: white;'>View Applicants</a>";
+                    }
+                    echo "</td>";
+                    
+                    echo "</tr>";
+                }
+                echo "</table>";
+                echo "<p>Total active jobs: " . $result->num_rows . "</p>";
+            } else {
+                echo "<p>No active jobs found in the database.</p>";
             }
-            echo "</td>";
-            
-            echo "</tr>";
-        }
-        echo "</table>";
-        echo "<p>Total active jobs: " . $result->num_rows . "</p>";
-    } else {
-        echo "<p>No active jobs found in the database.</p>";
-    }
-    ?>
+            ?>
 
-    <?php
-    // Display deleted jobs
-    $deleted_sql = "SELECT job_id, job_description, company_name, major, poster_email 
-                    FROM jobs 
-                    WHERE deleted = 1 AND poster_email = ?";
-    $deleted_stmt = $conn->prepare($deleted_sql);
-    $deleted_stmt->bind_param("s", $current_user_email);
-    $deleted_stmt->execute();
-    $deleted_result = $deleted_stmt->get_result();
+            <?php
+            // Display deleted jobs
+            $deleted_sql = "SELECT job_id, job_description, company_name, major, poster_email 
+                            FROM jobs 
+                            WHERE deleted = 1 AND poster_email = ?";
+            $deleted_stmt = $conn->prepare($deleted_sql);
+            $deleted_stmt->bind_param("s", $current_user_email);
+            $deleted_stmt->execute();
+            $deleted_result = $deleted_stmt->get_result();
 
-    echo "<h2>Deleted Jobs</h2>";
-    if ($deleted_result->num_rows > 0) {
-        echo "<table>";
-        echo "<tr>
-                <th>Description</th>
-                <th>Company</th>
-                <th>Major</th>
-                <th>Email</th>
-              </tr>";
-              
-        while($row = $deleted_result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>" . $row["job_description"] . "</td>";
-            echo "<td>" . $row["company_name"] . "</td>";
-            echo "<td>" . $row["major"] . "</td>";
-            echo "<td>" . ($row["poster_email"] ?? 'N/A') . "</td>";
-            echo "</tr>";
-        }
-        echo "</table>";
-        echo "<p>Total deleted jobs: " . $deleted_result->num_rows . "</p>";
-    } else {
-        echo "<p>No deleted jobs found for your account.</p>";
-    }
-    $deleted_stmt->close();
-    ?>
-    
-    <div class="job-form">
-        <h2>Create New Job Posting</h2>
-        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-            <label for="job_description">Job Description:</label>
-            <textarea name="job_description" id="job_description" required></textarea>
+            echo "<h2>Deleted Jobs</h2>";
+            if ($deleted_result->num_rows > 0) {
+                echo "<table>";
+                echo "<tr>
+                        <th>Description</th>
+                        <th>Company</th>
+                        <th>Major</th>
+                        <th>Email</th>
+                      </tr>";
+                      
+                while($row = $deleted_result->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>" . $row["job_description"] . "</td>";
+                    echo "<td>" . $row["company_name"] . "</td>";
+                    echo "<td>" . $row["major"] . "</td>";
+                    echo "<td>" . ($row["poster_email"] ?? 'N/A') . "</td>";
+                    echo "</tr>";
+                }
+                echo "</table>";
+                echo "<p>Total deleted jobs: " . $deleted_result->num_rows . "</p>";
+            } else {
+                echo "<p>No deleted jobs found for your account.</p>";
+            }
+            $deleted_stmt->close();
+            ?>
             
-            <label for="company_name">Company Name:</label>
-            <input type="text" name="company_name" id="company_name" required>
+            <div class="job-form">
+                <h2>Create New Job Posting</h2>
+                <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+                    <label for="job_description">Job Description:</label>
+                    <textarea name="job_description" id="job_description" required></textarea>
+                    
+                    <label for="company_name">Company Name:</label>
+                    <input type="text" name="company_name" id="company_name" required>
+                    
+                    <label for="major">Major:</label>
+                    <input type="text" name="major" id="major" required>
+                    
+                    <button type="submit" class="btn">Create Job</button>
+                </form>
+            </div>
             
-            <label for="major">Major:</label>
-            <input type="text" name="major" id="major" required>
-            
-            <button type="submit">Create Job</button>
-        </form>
+            <p><a href="return_to_dashboard.php" class="btn">Return to Dashboard</a></p>
+        </div>
     </div>
-    
-    <p><a href="return_to_dashboard.php">Return to Dashboard</a></p>
     
     <?php
     $conn->close();

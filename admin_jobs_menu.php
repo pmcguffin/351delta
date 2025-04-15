@@ -40,6 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Listings Dashboard</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="css_style.css">
     <style>
         table {
             border-collapse: collapse;
@@ -84,6 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && 
             margin: 5px;
             cursor: pointer;
         }
+        .confirm-btn:hover {
+            background-color: #cc0000;
+        }
         .cancel-btn {
             background-color: #666;
             color: white;
@@ -92,73 +97,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && 
             margin: 5px;
             cursor: pointer;
         }
+        .cancel-btn:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 <body>
-    <h1>Job Listings Dashboard</h1>
+    <header>
+        <h1>Job Listings Dashboard</h1>
+    </header>
 
-    <?php
-    // Show confirmation box if delete_id is set in POST but not confirmed yet
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id']) && !isset($_POST['confirm_delete'])) {
-        $confirm_id = $conn->real_escape_string($_POST['delete_id']);
-        $sql = "SELECT job_description, company_name FROM jobs WHERE job_id = '$confirm_id'";
-        $result = $conn->query($sql);
-        if ($result->num_rows > 0) {
-            $job = $result->fetch_assoc();
-            echo "<div class='confirm-box'>";
-            echo "<p>Are you sure you want to delete this job?</p>";
-            echo "<p>Description: " . $job['job_description'] . "</p>";
-            echo "<p>Company: " . $job['company_name'] . "</p>";
-            echo "<form method='POST' action='" . $_SERVER['PHP_SELF'] . "'>";
-            echo "<input type='hidden' name='delete_id' value='$confirm_id'>";
-            echo "<input type='hidden' name='confirm_delete' value='1'>";
-            echo "<button type='submit' class='confirm-btn'>Yes, Delete</button>";
-            echo "<a href='" . $_SERVER['PHP_SELF'] . "'><button type='button' class='cancel-btn'>Cancel</button></a>";
-            echo "</form>";
-            echo "</div>";
-        }
-    }
-    ?>
-    
-    <?php
-    // Query to fetch all jobs
-    $sql = "SELECT job_id, job_description, company_name, major, poster_email FROM jobs WHERE deleted = 0";
-    $result = $conn->query($sql);
+    <div class="dashboard-container">
+        <div class="dashboard-box">
+            <?php
+            // Show confirmation box if delete_id is set in POST but not confirmed yet
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id']) && !isset($_POST['confirm_delete'])) {
+                $confirm_id = $conn->real_escape_string($_POST['delete_id']);
+                $sql = "SELECT job_description, company_name FROM jobs WHERE job_id = '$confirm_id'";
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) {
+                    $job = $result->fetch_assoc();
+                    echo "<div class='confirm-box'>";
+                    echo "<p>Are you sure you want to delete this job?</p>";
+                    echo "<p>Description: " . $job['job_description'] . "</p>";
+                    echo "<p>Company: " . $job['company_name'] . "</p>";
+                    echo "<form method='POST' action='" . $_SERVER['PHP_SELF'] . "'>";
+                    echo "<input type='hidden' name='delete_id' value='$confirm_id'>";
+                    echo "<input type='hidden' name='confirm_delete' value='1'>";
+                    echo "<button type='submit' class='confirm-btn btn'>Yes, Delete</button>";
+                    echo "<a href='" . $_SERVER['PHP_SELF'] . "'><button type='button' class='cancel-btn btn'>Cancel</button></a>";
+                    echo "</form>";
+                    echo "</div>";
+                }
+            }
+            ?>
+            
+            <?php
+            // Query to fetch all jobs
+            $sql = "SELECT job_id, job_description, company_name, major, poster_email FROM jobs WHERE deleted = 0";
+            $result = $conn->query($sql);
 
-    if ($result->num_rows > 0) {
-        echo "<table>";
-        echo "<tr>
-                <th>Description</th>
-                <th>Company</th>
-                <th>Major</th>
-                <th>Email</th>
-                <th>Action</th>
-              </tr>";
-              
-        while($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>" . $row["job_description"] . "</td>";
-            echo "<td>" . $row["company_name"] . "</td>";
-            echo "<td>" . $row["major"] . "</td>";
-            echo "<td>" . ($row["poster_email"] ?? 'N/A') . "</td>";
-            echo "<td>";
-            echo "<form method='POST' action='" . $_SERVER['PHP_SELF'] . "'>";
-            echo "<input type='hidden' name='delete_id' value='" . $row["job_id"] . "'>";
-            echo "<button type='submit' class='delete-btn'>Delete</button>";
-            echo "</form>";
-            echo "</td>";
-            echo "</tr>";
-        }
-        echo "</table>";
-        echo "<p>Total jobs: " . $result->num_rows . "</p>";
-    } else {
-        echo "<p>No jobs found in the database.</p>";
-    }
-    ?>
+            if ($result->num_rows > 0) {
+                echo "<table>";
+                echo "<tr>
+                        <th>Description</th>
+                        <th>Company</th>
+                        <th>Major</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                      </tr>";
+                      
+                while($row = $result->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>" . $row["job_description"] . "</td>";
+                    echo "<td>" . $row["company_name"] . "</td>";
+                    echo "<td>" . $row["major"] . "</td>";
+                    echo "<td>" . ($row["poster_email"] ?? 'N/A') . "</td>";
+                    echo "<td>";
+                    echo "<form method='POST' action='" . $_SERVER['PHP_SELF'] . "'>";
+                    echo "<input type='hidden' name='delete_id' value='" . $row["job_id"] . "'>";
+                    echo "<button type='submit' class='delete-btn btn'>Delete</button>";
+                    echo "</form>";
+                    echo "</td>";
+                    echo "</tr>";
+                }
+                echo "</table>";
+                echo "<p>Total jobs: " . $result->num_rows . "</p>";
+            } else {
+                echo "<p>No jobs found in the database.</p>";
+            }
+            ?>
+            
+            <p><a href="admin_dashboard.php" class="btn">Return to Dashboard</a></p>
+        </div>
+    </div>
     
     <?php
     $conn->close();
     ?>
-    <p><a href="admin_dashboard.php">Return to Dashboard</a></p>
 </body>
 </html>
