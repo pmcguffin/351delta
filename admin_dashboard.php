@@ -13,7 +13,7 @@ if (!isset($_SESSION['Admin_Email'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professor Dashboard</title>
+    <title>Admin Dashboard</title>
     <link rel="stylesheet" href="css_style.css"> <!-- Link to the external CSS file -->
 </head>
 <body>
@@ -38,7 +38,7 @@ if (!isset($_SESSION['Admin_Email'])) {
             <!-- <a href="events.php" class="btn">Events</a><br><br> -->
 	    <a href="findotherspt2.php" class="btn">Find Others</a><br>
 
-            <a href="login.php" class="btn logout-btn">Logout</a> <!-- Logout option -->
+            <a href="logout.php" class="btn logout-btn">Logout</a> <!-- Logout option -->
         </div>
     </div>
 </body>
