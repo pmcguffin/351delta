@@ -31,7 +31,7 @@ if (!isset($_SESSION['Employer_Email'])) {
 
             <!-- Buttons for different employer features -->
             <a href="account_settings.php" class="btn">Account Settings</a><br>
-            <a href="messages_ui.php" class="btn">Messages</a><br>
+            <a href="message_ui.php" class="btn">Messages</a><br>
             <a href="jobs_menu.php" class="btn">Job Posts</a><br>
             <!-- <a href="applicants.php" class="btn">Applicants</a><br><br> -->
             <a href="findotherspt2.php" class="btn">Find Others</a><br>

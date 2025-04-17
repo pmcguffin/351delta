@@ -1,5 +1,6 @@
 <?php
 session_start();
+include('home_icon2.php'); 
 if (!isset($_SESSION['Admin_Email'])) {
     header("Location: login.php");
     exit();
@@ -168,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && 
             }
             ?>
             
-            <p><a href="admin_dashboard.php" class="btn">Return to Dashboard</a></p>
+            <!-- <p><a href="admin_dashboard.php" class="btn">Return to Dashboard</a></p> -->
         </div>
     </div>
     

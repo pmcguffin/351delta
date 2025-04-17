@@ -1,5 +1,6 @@
 <?php
 session_start();
+include('home_icon2.php'); 
 if (!isset($_SESSION['Student_Email'])) {
     header("Location: login.php"); // Redirect to login page if not a student
     exit();
@@ -143,7 +144,7 @@ if (isset($_GET['apply_job_id'])) {
             }
             ?>
             
-            <p><a href="student_dashboard.php" class="btn">Return to Dashboard</a></p>
+            <!-- <p><a href="student_dashboard.php" class="btn">Return to Dashboard</a></p> -->
         </div>
     </div>
     

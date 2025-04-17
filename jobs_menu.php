@@ -1,5 +1,6 @@
 <?php
 session_start();
+include('home_icon2.php'); 
 if (!isset($_SESSION['Employer_Email']) && 
     !isset($_SESSION['Professor_Email']) && 
     !isset($_SESSION['Alumni_Email']) && 
@@ -242,7 +243,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </form>
             </div>
             
-            <p><a href="return_to_dashboard.php" class="btn">Return to Dashboard</a></p>
+            <!-- <p><a href="return_to_dashboard.php" class="btn">Return to Dashboard</a></p> -->
         </div>
     </div>
     

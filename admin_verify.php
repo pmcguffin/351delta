@@ -1,5 +1,6 @@
 <?php
 session_start();
+include('home_icon2.php'); 
 
 // Ensure the user is an Admin
 if (!isset($_SESSION["Admin_Email"])) {
@@ -140,7 +141,7 @@ $conn->close();
         }
 
         button {
-            background-color: #0077C8; /* Light Blue */
+            background-color: #005A9C; /* Light Blue */
             color: white;
             padding: 8px 12px;
             font-size: 14px;
@@ -204,7 +205,7 @@ $conn->close();
             <?php endwhile; ?>
         </ul>
 			    <div class="left-bar">
-        <a href="admin_dashboard.php" class="dashboard-button">⬅ Back to Admin Dashboard</a>
+        <!-- <a href="admin_dashboard.php" class="dashboard-button">⬅ Back to Admin Dashboard</a> -->
     </div>
     </div>
 	

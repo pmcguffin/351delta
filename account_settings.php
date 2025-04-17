@@ -1,6 +1,7 @@
 <?php
 session_start();
 include('Connection.php');
+include('home_icon2.php'); 
 
 if (empty($_SESSION)) {
     header("Location: login.php");
@@ -278,8 +279,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button type="submit">Update Profile</button>
         </form>
 
-        <p class="back-link">
-            <a href="main.php">⬅ Back to Main Page</a>
+        <!-- <p class="back-link">
+            <a href="main.php">⬅ Back to Main Page</a> -->
         </p>
     </div>
 

@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         switch ($userType) {
             case "Alumni":
                 $sql = "INSERT INTO Alumni_Account (Alumni_Email, Name, Phone_Number, Password_Hash, verified) 
-                        VALUES (?, ?, ?, ?, 1)";
+                        VALUES (?, ?, ?, ?, 0)";
                 break;
             case "Professor":
                 $sql = "INSERT INTO Professors_Account (Professor_Email, Name, Phone_Number, Password_Hash) 
@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
             case "Employer":
                 $sql = "INSERT INTO Employers_Account (Employer_Email, Name, Phone_Number, Password_Hash, verified) 
-                        VALUES (?, ?, ?, ?, 1)";
+                        VALUES (?, ?, ?, ?, 0)";
                 break;
             case "Admin":
                 $sql = "INSERT INTO Admin_Account (Admin_Email, Name, Phone_Number, Password_Hash) 
