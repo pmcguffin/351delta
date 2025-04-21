@@ -3,8 +3,7 @@ session_start();
 include('home_icon2.php'); 
 if (!isset($_SESSION['Employer_Email']) && 
     !isset($_SESSION['Professor_Email']) && 
-    !isset($_SESSION['Alumni_Email']) && 
-    !isset($_SESSION['Admin_Email'])) {
+    !isset($_SESSION['Alumni_Email'])) {
     header("Location: login.php");
     exit();
 }
@@ -26,8 +25,7 @@ if ($conn->connect_error) {
 // Get current user's email
 $current_user_email = $_SESSION['Employer_Email'] ?? 
                      $_SESSION['Professor_Email'] ?? 
-                     $_SESSION['Alumni_Email'] ?? 
-                     $_SESSION['Admin_Email'] ?? '';
+                     $_SESSION['Alumni_Email'] ??'';
 
 // Handle job deletion
 if (isset($_GET['delete_job_id'])) {
