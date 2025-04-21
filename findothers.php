@@ -1,140 +1,126 @@
-
-<h1>Find Others!</h1>
-<p>Search based on Major, Graduation Year, Company name, or Name:</p>  
-
-<form class="example" action="findothers.php" method="post">
-  <input type="text" placeholder="Major, Graduation Year, Name" name="search">
-  <button type="submit"><i class="fa fa-search"></i></button>
-</form>
-
-<br>
-<body>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Others</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
- <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #fff;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Find Others</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        header {
-            background-color: #001f3d; /* Navy Blue */
-            color: white;
-            padding: 15px;
-            text-align: center;
-        }
+    h1 {
+      color: #001f3d;
+    }
 
-        h2 {
-            font-size: 24px;
-        }
+    form.example {
+      display: flex;
+      justify-content: center;
+      max-width: 600px;
+      width: 100%;
+      margin-bottom: 30px;
+    }
 
-        .container {
-            max-width: 500px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #f8f8f8;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+    form.example input[type="text"] {
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      flex: 1;
+      border-radius: 6px 0 0 6px;
+      outline: none;
+    }
 
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        /* Add this to your CSS */
-        
-        input[type="text"], input[type="password"], input[type="radio"] {
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+    form.example button {
+      padding: 12px 20px;
+      background-color: #001f3d;
+      color: white;
+      border: none;
+      border-radius: 0 6px 6px 0;
+      cursor: pointer;
+    }
 
-        button {
-            background-color: #001f3d; /* Navy Blue */
-            color: white;
-            border: none;
-            padding: 12px;
-            font-size: 18px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
+    .results {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      width: 100%;
+      max-width: 1100px;
+    }
 
-        button:hover {
-            background-color: #005bb5; /* Lighter blue on hover */
-        }
+    .user-card {
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+      width: 280px;
+      transition: transform 0.2s;
+    }
 
-        .radio-label {
-            margin: 10px 0;
-            font-size: 18px;
-        }
+    .user-card:hover {
+      transform: translateY(-5px);
+    }
 
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #001f3d;
-            color: white;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
+    .user-card h3 {
+      margin: 0 0 10px;
+      color: #001f3d;
+    }
 
-		.error-container {
-			display: flex;
-			justify-content: center;  /* Centers horizontally */
-			align-items: center;  /* Aligns towards the top */
-			height: 20vh;  /* Reduces whitespace */
-			flex-direction: column;
-			margin-top: 20px; /* Adds a small gap from the top */
-		}
+    .user-card p {
+      margin: 6px 0;
+      color: #444;
+      font-size: 14px;
+    }
 
-		.error-message {
-			background-color: #ffcccc;
-			color: #d8000c;
-			text-align: center;
-			padding: 12px;
-			font-size: 16px;
-			font-weight: bold;
-			border: 1px solid #d8000c;
-			border-radius: 5px;
-			width: 50%;
-			max-width: 500px;
-		}
+    .add-btn {
+      margin-top: 10px;
+      background-color: #001f3d;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
 
-
-    </style>
-
-
-
+    .add-btn.added {
+      background-color: #28a745;
+      cursor: default;
+    }
+  </style>
+  <script>
+    function changeButton(btn) {
+      btn.textContent = "✔️ Added";
+      btn.classList.add("added");
+      btn.disabled = true;
+    }
+  </script>
 </head>
+
+<body>
+  <h1>Find Others!</h1>
+  <p>Search based on Major, Graduation Year, Company name, or Name:</p>
+  <form class="example" action="findothers.php" method="post">
+    <input type="text" placeholder="Major, Graduation Year, Name" name="search">
+    <button type="submit"><i class="fa fa-search"></i></button>
+  </form>
 
 <?php
 if (isset($_POST['search'])) {
-    // Database connection details
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "351delta";
-
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = new mysqli("localhost", "root", "", "351delta");
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
 
-
     $search = $conn->real_escape_string($_POST['search']); 
 
-   
     $sql = "
         SELECT 'Admin' AS user_type, Name, NULL AS Major, NULL AS Graduation_Year, NULL AS Company_Name 
         FROM Admin_Account 
@@ -173,46 +159,32 @@ if (isset($_POST['search'])) {
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
-        echo "<h2>Search Results:</h2>";
-        echo "<table border='1'>
-                <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Major</th>
-                    <th>Graduation Year</th>
-                    <th>Company Name</th>
-                    <th>Action</th>
-                </tr>";
-
+        echo "<div class='results'>";
         while ($row = $result->fetch_assoc()) {
-            echo "<tr>
-                    <td>" . $row["user_type"] . "</td>
-                    <td>" . $row["Name"] . "</td>
-                    <td>" . ($row["Major"] ? $row["Major"] : 'N/A') . "</td>
-                    <td>" . ($row["Graduation_Year"] ? $row["Graduation_Year"] : 'N/A') . "</td>
-                    <td>" . ($row["Company_Name"] ? $row["Company_Name"] : 'N/A') . "</td>
-                    <td>
-                        <form action='save_contact.php' method='post'>
-                            <input type='hidden' name='user_type' value='" . $row["user_type"] . "'>
-                            <input type='hidden' name='name' value='" . $row["Name"] . "'>
-                            <input type='hidden' name='major' value='" . ($row["Major"] ? $row["Major"] : '') . "'>
-                            <input type='hidden' name='grad_year' value='" . ($row["Graduation_Year"] ? $row["Graduation_Year"] : '') . "'>
-                            <input type='hidden' name='company' value='" . ($row["Company_Name"] ? $row["Company_Name"] : '') . "'>
-                            <button type='submit'>Add</button>
-                        </form>
-                    </td>
-                  </tr>";
+            echo "<div class='user-card'>
+                    <h3>" . htmlspecialchars($row["Name"]) . "</h3>
+                    <p><strong>Type:</strong> " . $row["user_type"] . "</p>
+                    <p><strong>Major:</strong> " . ($row["Major"] ?? 'N/A') . "</p>
+                    <p><strong>Graduation Year:</strong> " . ($row["Graduation_Year"] ?? 'N/A') . "</p>
+                    <p><strong>Company:</strong> " . ($row["Company_Name"] ?? 'N/A') . "</p>
+                    <button type='button' class='add-btn' onclick='changeButton(this)'>Add</button>
+                </div>";
         }
-        echo "</table>";
+        echo "</div>";
     } else {
-        echo "No results found.";
+        echo "<p>No results found.</p>";
     }
 
     $conn->close();
 }
 ?>
-	
- 
-      
+
+</body>
+</html>
 
         
+
+
+
+
+     
