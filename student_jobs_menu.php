@@ -87,6 +87,13 @@ if (isset($_GET['apply_job_id'])) {
             color: #666;
             font-style: italic;
         }
+        .post-link {
+            color: black;
+            text-decoration: none;
+        }
+        .post-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -98,7 +105,7 @@ if (isset($_GET['apply_job_id'])) {
         <div class="dashboard-box">
             <?php
             // Query to fetch all jobs
-            $sql = "SELECT job_id, job_description, company_name, major, alumni_email FROM jobs WHERE deleted = 0";
+            $sql = "SELECT job_id, job_description, company_name, major, post_link, alumni_email FROM jobs WHERE deleted = 0";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
@@ -107,6 +114,7 @@ if (isset($_GET['apply_job_id'])) {
                         <th>Description</th>
                         <th>Company</th>
                         <th>Major</th>
+                        <th>Link</th>
                         <th>Alumni Email</th>
                         <th>Action</th>
                       </tr>";
@@ -116,6 +124,7 @@ if (isset($_GET['apply_job_id'])) {
                     echo "<td>" . $row["job_description"] . "</td>";
                     echo "<td>" . $row["company_name"] . "</td>";
                     echo "<td>" . $row["major"] . "</td>";
+                    echo "<td><a href='" . $row["post_link"] . "' class='post-link' target='_blank'>" . $row["post_link"] . "</a></td>";
                     echo "<td>" . ($row["alumni_email"] ?? 'N/A') . "</td>";
                     
                     // Check if student has applied

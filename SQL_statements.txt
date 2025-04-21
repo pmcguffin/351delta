@@ -257,3 +257,5 @@ CREATE TABLE Chat_Information (
 =======
 
 >>>>>>> 8357802ca5768a8fa56690ac996970ec084c98ea
+
+ALTER TABLE jobs ADD COLUMN post_link VARCHAR(255);

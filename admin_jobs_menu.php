@@ -101,6 +101,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && 
         .cancel-btn:hover {
             background-color: #555;
         }
+        .post-link {
+            color: black;
+            text-decoration: none;
+        }
+        .post-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -135,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && 
             
             <?php
             // Query to fetch all jobs
-            $sql = "SELECT job_id, job_description, company_name, major, poster_email FROM jobs WHERE deleted = 0";
+            $sql = "SELECT job_id, job_description, company_name, major, post_link, poster_email FROM jobs WHERE deleted = 0";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
@@ -144,6 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && 
                         <th>Description</th>
                         <th>Company</th>
                         <th>Major</th>
+                        <th>Link</th>
                         <th>Email</th>
                         <th>Action</th>
                       </tr>";
@@ -153,6 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && 
                     echo "<td>" . $row["job_description"] . "</td>";
                     echo "<td>" . $row["company_name"] . "</td>";
                     echo "<td>" . $row["major"] . "</td>";
+                    echo "<td><a href='" . $row["post_link"] . "' class='post-link' target='_blank'>" . $row["post_link"] . "</a></td>";
                     echo "<td>" . ($row["poster_email"] ?? 'N/A') . "</td>";
                     echo "<td>";
                     echo "<form method='POST' action='" . $_SERVER['PHP_SELF'] . "'>";

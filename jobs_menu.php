@@ -60,16 +60,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $job_description = $_POST['job_description'];
     $company_name = $_POST['company_name'];
     $major = $_POST['major'];
+    $post_link = $_POST['post_link'];
     
     $max_id_query = "SELECT MAX(job_id) as max_id FROM jobs";
     $max_id_result = $conn->query($max_id_query);
     $max_id_row = $max_id_result->fetch_assoc();
     $new_job_id = ($max_id_row['max_id'] !== null) ? $max_id_row['max_id'] + 1 : 1;
     
-    $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, poster_email) 
-            VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO jobs (job_id, job_description, company_name, major, post_link, poster_email) 
+            VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("issss", $new_job_id, $job_description, $company_name, $major, $current_user_email);
+    $stmt->bind_param("isssss", $new_job_id, $job_description, $company_name, $major, $post_link, $current_user_email);
     
     if ($stmt->execute()) {
         echo "<p style='color: green;'>Job posting created successfully!</p>";
@@ -138,6 +139,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .view-link:hover {
             text-decoration: underline;
         }
+        .post-link {
+            color: black;
+            text-decoration: none;
+        }
+        .post-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -149,7 +157,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="dashboard-box">
             <?php
             // Display active jobs
-            $sql = "SELECT job_id, job_description, company_name, major, poster_email FROM jobs WHERE deleted = 0";
+            $sql = "SELECT job_id, job_description, company_name, major, post_link, poster_email FROM jobs WHERE deleted = 0";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
@@ -158,6 +166,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <th>Description</th>
                         <th>Company</th>
                         <th>Major</th>
+                        <th>Link</th>
                         <th>Email</th>
                         <th>Action</th>
                       </tr>";
@@ -167,6 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo "<td>" . $row["job_description"] . "</td>";
                     echo "<td>" . $row["company_name"] . "</td>";
                     echo "<td>" . $row["major"] . "</td>";
+                    echo "<td><a href='" . $row["post_link"] . "' class='post-link' target='_blank'>" . $row["post_link"] . "</a></td>";
                     echo "<td>" . ($row["poster_email"] ?? 'N/A') . "</td>";
                     
                     echo "<td>";
@@ -191,7 +201,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <?php
             // Display deleted jobs
-            $deleted_sql = "SELECT job_id, job_description, company_name, major, poster_email 
+            $deleted_sql = "SELECT job_id, job_description, company_name, major, post_link, poster_email 
                             FROM jobs 
                             WHERE deleted = 1 AND poster_email = ?";
             $deleted_stmt = $conn->prepare($deleted_sql);
@@ -206,6 +216,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <th>Description</th>
                         <th>Company</th>
                         <th>Major</th>
+                        <th>Link</th>
                         <th>Email</th>
                       </tr>";
                       
@@ -214,6 +225,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo "<td>" . $row["job_description"] . "</td>";
                     echo "<td>" . $row["company_name"] . "</td>";
                     echo "<td>" . $row["major"] . "</td>";
+                    echo "<td><a href='" . $row["post_link"] . "' class='post-link' target='_blank'>" . $row["post_link"] . "</a></td>";
                     echo "<td>" . ($row["poster_email"] ?? 'N/A') . "</td>";
                     echo "</tr>";
                 }
@@ -236,6 +248,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                     <label for="major">Major:</label>
                     <input type="text" name="major" id="major" required>
+                    
+                    <label for="post_link">Job Posting Link:</label>
+                    <input type="url" name="post_link" id="post_link">
                     
                     <button type="submit" class="btn">Create Job</button>
                 </form>

@@ -1,5 +1,6 @@
 <?php
 session_start();
+include('home_icon2.php');
 if (!isset($_SESSION['Employer_Email']) && 
     !isset($_SESSION['Professor_Email']) && 
     !isset($_SESSION['Alumni_Email']) && 
@@ -56,6 +57,7 @@ $job_stmt->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Applicants</title>
+    <link rel="stylesheet" href="css_style.css">
     <style>
         table {
             border-collapse: collapse;
@@ -79,39 +81,45 @@ $job_stmt->close();
     </style>
 </head>
 <body>
-    <h1>Applicants for Job ID: <?php echo $job_id; ?></h1>
+    <header>
+        <h1>Applicants for Job ID: <?php echo $job_id; ?></h1>
+    </header>
     
-    <?php
-    // Query to fetch applicants
-    $sql = "SELECT application_id, student_email FROM applications WHERE job_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $job_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    <div class="dashboard-container">
+        <div class="dashboard-box">
+            <?php
+            // Query to fetch applicants
+            $sql = "SELECT application_id, student_email FROM applications WHERE job_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $job_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        echo "<table>";
-        echo "<tr>
-                <th>Application ID</th>
-                <th>Student Email</th>
-              </tr>";
-              
-        while($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>" . $row["application_id"] . "</td>";
-            echo "<td>" . $row["student_email"] . "</td>";
-            echo "</tr>";
-        }
-        echo "</table>";
-        echo "<p>Total applicants: " . $result->num_rows . "</p>";
-    } else {
-        echo "<p>No applicants found for this job.</p>";
-    }
-    
-    $stmt->close();
-    ?>
-    
-    <p><a href="jobs_menu.php">Return to Job Listings</a></p>
+            if ($result->num_rows > 0) {
+                echo "<table>";
+                echo "<tr>
+                        <th>Application ID</th>
+                        <th>Student Email</th>
+                      </tr>";
+                      
+                while($row = $result->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>" . $row["application_id"] . "</td>";
+                    echo "<td>" . $row["student_email"] . "</td>";
+                    echo "</tr>";
+                }
+                echo "</table>";
+                echo "<p>Total applicants: " . $result->num_rows . "</p>";
+            } else {
+                echo "<p>No applicants found for this job.</p>";
+            }
+            
+            $stmt->close();
+            ?>
+            
+            <p><a href="jobs_menu.php" class="btn">Return to Job Listings</a></p>
+        </div>
+    </div>
     
     <?php
     $conn->close();
