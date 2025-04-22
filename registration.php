@@ -1,5 +1,6 @@
 <?php
 session_start();
+include('home_icon2.php');
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>   
   <title>Find Others</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
   <style>
@@ -15,9 +15,9 @@
       flex-direction: column;
       align-items: center;
     }
-
+    /* 001f3d */
     h1 {
-      color: #001f3d;
+      color: #003366; 
     }
 
     form.example {
@@ -39,7 +39,7 @@
 
     form.example button {
       padding: 12px 20px;
-      background-color: #001f3d;
+      background-color: #003366;
       color: white;
       border: none;
       border-radius: 0 6px 6px 0;
@@ -70,7 +70,7 @@
 
     .user-card h3 {
       margin: 0 0 10px;
-      color: #001f3d;
+      color: #003366;
     }
 
     .user-card p {
@@ -81,7 +81,7 @@
 
     .add-btn {
       margin-top: 10px;
-      background-color: #001f3d;
+      background-color: #003366;
       color: white;
       border: none;
       padding: 8px 16px;
@@ -105,6 +105,7 @@
 </head>
 
 <body>
+
   <h1>Find Others!</h1>
   <p>Search based on Major, Graduation Year, Company name, or Name:</p>
   <form class="example" action="findothers.php" method="post">
@@ -113,6 +114,7 @@
   </form>
 
 <?php
+include('home_button.php'); 
 if (isset($_POST['search'])) {
     $conn = new mysqli("localhost", "root", "", "351delta");
     if ($conn->connect_error) {
