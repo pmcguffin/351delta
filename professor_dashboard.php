@@ -1,4 +1,5 @@
 <?php
+// Josh's code
 session_start(); // Start the session
 
 // Ensure the user is an Professor
