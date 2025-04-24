@@ -1,5 +1,6 @@
 <?php
 session_start();
+// Josh's code
 
 // Ensure the user is an Employer
 if (!isset($_SESSION['Employer_Email'])) {
