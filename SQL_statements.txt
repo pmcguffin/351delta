@@ -1,3 +1,4 @@
+-- Authors: Patrick McGuffin, Camryn Lewis, Matthew Kelly, & Joshua Jones
 CREATE TABLE Alumni_Account (
     Alumni_Email VARCHAR(255) PRIMARY KEY,
     Name VARCHAR(255),

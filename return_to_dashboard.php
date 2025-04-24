@@ -1,4 +1,5 @@
 <?php
+// Author: Patrick McGuffin
 session_start();
 if (isset($_SESSION['Employer_Email'])) {
     header("Location: employer_dashboard.php");

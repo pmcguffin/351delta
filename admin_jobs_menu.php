@@ -1,4 +1,5 @@
 <?php
+// Author: Patrick McGuffin
 session_start();
 include('home_icon2.php'); 
 if (!isset($_SESSION['Admin_Email'])) {
