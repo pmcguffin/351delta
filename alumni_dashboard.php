@@ -1,5 +1,6 @@
 <?php
 session_start();
+// Josh's code
 
 // Ensure the user is an Alumni
 if (!isset($_SESSION['Alumni_Email'])) {
