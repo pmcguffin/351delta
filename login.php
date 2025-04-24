@@ -1,4 +1,5 @@
 <?php
+// Matthew Kelly &
 ob_start();  // Prevents unexpected output
 session_start();
 session_regenerate_id(true);
