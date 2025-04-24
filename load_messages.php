@@ -1,4 +1,5 @@
 <?php
+// Josh's code
 session_start();
 include('Connection.php');
 
