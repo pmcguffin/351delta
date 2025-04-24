@@ -1,4 +1,5 @@
 <?php
+// Josh's code
 session_start();
 
 // Check if any user type is logged in
